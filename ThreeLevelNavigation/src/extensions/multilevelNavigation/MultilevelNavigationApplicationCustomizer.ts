@@ -28,6 +28,7 @@ export default class MultilevelNavigationApplicationCustomizer
   //Attributes
   public editDivLoading: boolean = false;
   public addButtonContextShowing: boolean = false;
+  public rootSiteCollectionUrl: string = "";
   @override
   public onInit(): Promise<void> {
     Log.info(LOG_SOURCE, `Initialized ${strings.Title}`);
@@ -39,6 +40,10 @@ export default class MultilevelNavigationApplicationCustomizer
 
 
 
+
+    //Get root site collection url
+    let urlParts = this.context.pageContext.site.absoluteUrl.split('/');
+    this.rootSiteCollectionUrl = urlParts.slice(0, 3).join('/');
 
     //Create NavList if NavList does not exst yet. The links of the custom navigation will be stored in this List.
     this.checkListExists();
@@ -143,6 +148,7 @@ export default class MultilevelNavigationApplicationCustomizer
     //Get navigation links from NavLinks list and store the links in the arrays
     this.getListItems().then(items => {
       navString = items[0].NavLinks;
+     //navString = "Bing%=https://bing.com%#Mapple%=https://apple.com%&Google%=https://google.com%?Bing%=https://bing.com%#Der superduper längste Link, den man sich nur irgendwie vorstellen kann. Echt lange.%=https://apple.com%&Apple%=https://apple.com%?Apple%=https://apple.com%!Google%=https://google.com%#Google%=https://google.com%!Dies ist ebenfalls ein super super langer link, es ist kaum zu glauben%=https://%!Google Goolge Goolge Goolge Go%=https://google.com"
       tempArray = navString.split('%&');
 
       //Get Layer 1 Links
@@ -928,7 +934,7 @@ export default class MultilevelNavigationApplicationCustomizer
 
 
     //Save navString to NavList
-    const endpoint: string = this.context.pageContext.web.absoluteUrl + "/_api/web/lists/getbytitle('NavList')/items(1)";
+    const endpoint: string = this.rootSiteCollectionUrl + "/_api/web/lists/getbytitle('NavList')/items(1)";
     const headers: any = {
       'Content-type': 'application/json;odata=nometadata',
       'odata-version': '4.0',
@@ -1197,7 +1203,7 @@ export default class MultilevelNavigationApplicationCustomizer
     const columns: string[] = ['Title', 'NavLinks'];
     const selectColumns: string = columns.join(',');
 
-    return this.context.spHttpClient.get(this.context.pageContext.web.absoluteUrl + `/_api/web/lists/getbytitle('${listName}')/items?$select=${selectColumns}`, SPHttpClient.configurations.v1)
+    return this.context.spHttpClient.get(this.rootSiteCollectionUrl + `/_api/web/lists/getbytitle('${listName}')/items?$select=${selectColumns}`, SPHttpClient.configurations.v1)
       .then((response: SPHttpClientResponse) => {
         return response.json();
       })
@@ -1208,7 +1214,7 @@ export default class MultilevelNavigationApplicationCustomizer
 
   //This function checks if the NavList already exists. If no, the function creeateNavList() is called in order to create the NavList
   public checkListExists(): any {
-    this.context.spHttpClient.get(this.context.pageContext.web.absoluteUrl + '/_api/web/lists',
+    this.context.spHttpClient.get(this.rootSiteCollectionUrl + '/_api/web/lists',
       SPHttpClient.configurations.v1)
       .then((response: SPHttpClientResponse) => {
         response.json().then((lists: any) => {
@@ -1226,7 +1232,7 @@ export default class MultilevelNavigationApplicationCustomizer
 
   //This function creates the NavList
   public createNavList() {
-    let urlToPost: string = `${this.context.pageContext.web.absoluteUrl}/_api/web/lists`;
+    let urlToPost: string = `${this.rootSiteCollectionUrl}/_api/web/lists`;
     let listBody: any = {
       'Title': 'NavList',
       'Description': 'List for navigation links',
@@ -1260,7 +1266,7 @@ export default class MultilevelNavigationApplicationCustomizer
 
   //This funciton adds a column to the NavList. The column will have the name "NavLinks"
   public addColumnToList(columnName) {
-    const url: string = this.context.pageContext.web.absoluteUrl + `/_api/web/lists/getbytitle('NavList')/fields`;
+    const url: string = this.rootSiteCollectionUrl + `/_api/web/lists/getbytitle('NavList')/fields`;
     let options: ISPHttpClientOptions = {
       body: JSON.stringify({
         'Title': columnName,
@@ -1297,7 +1303,7 @@ export default class MultilevelNavigationApplicationCustomizer
   /*This function creates the list item inside the NavList where the navigation links will be stored in the field "NavLinks". 
   https://bing.com is added as the first link by default*/
   public createListItem() {
-    const url: string = this.context.pageContext.web.absoluteUrl + `/_api/web/lists/getbytitle('NavList')/items`;
+    const url: string = this.rootSiteCollectionUrl + `/_api/web/lists/getbytitle('NavList')/items`;
     let options: ISPHttpClientOptions = {
       body: JSON.stringify({
         'Title': 'My New Item',
