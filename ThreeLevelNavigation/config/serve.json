@@ -1,0 +1,29 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/core-build/serve.schema.json",
+  "port": 4321,
+  "https": true,
+  "serveConfigurations": {
+    "default": {
+      "pageUrl": "https://dev19.dccs-demo.at/projects/KUKComm/_layouts/15/viewlsts.aspx?view=14",
+      "customActions": {
+        "dcecca58-0575-4f44-a487-f56120ba8990": {
+          "location": "ClientSideExtension.ApplicationCustomizer",
+          "properties": {
+            "testMessage": "Test message"
+          }
+        }
+      }
+    },
+    "multilevelNavigation": {
+      "pageUrl": "https://dev19.dccs-demo.at/projects/KUKComm/_layouts/15/viewlsts.aspx?view=14",
+      "customActions": {
+        "dcecca58-0575-4f44-a487-f56120ba8990": {
+          "location": "ClientSideExtension.ApplicationCustomizer",
+          "properties": {
+            "testMessage": "Test message"
+          }
+        }
+      }
+    }
+  }
+}

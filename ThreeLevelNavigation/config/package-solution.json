@@ -1,0 +1,26 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
+  "solution": {
+    "name": "multilevel-navigation-client-side-solution",
+    "id": "81342437-8114-43fc-a8f7-0804beef2daf",
+    "version": "1.0.0.10",
+    "includeClientSideAssets": true,
+    "skipFeatureDeployment": false,
+    "features": [
+      {
+        "title": "Application Extension - Deployment of custom action.",
+        "description": "Deploys a custom action with ClientSideComponentId association",
+        "id": "a2874ac3-7459-420e-9508-e5016a8af8a3",
+        "version": "1.0.0.0",
+        "assets": {
+          "elementManifests": [
+            "elements.xml"
+          ]
+        }
+      }
+    ]
+  },
+  "paths": {
+    "zippedPackage": "solution/multilevelnavigation.sppkg"
+  }
+}
