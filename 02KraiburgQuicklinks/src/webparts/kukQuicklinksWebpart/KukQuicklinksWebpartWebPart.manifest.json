@@ -16,11 +16,11 @@
   "preconfiguredEntries": [{
     "groupId": "5c03119e-3074-46fd-976b-c60198311f70", // Other
     "group": { "default": "Other" },
-    "title": { "default": "KUK Quicklinks Webpart" },
+    "title": { "default": "Kraiburg Quicklinks Webpart" },
     "description": { "default": "Webpart for Quicklinks" },
     "officeFabricIconFontName": "Page",
     "properties": {
-      "description": "KUK Quicklinks Webpart"
+      "description": "Kraiburg Quicklinks Webpart"
     }
   }]
 }

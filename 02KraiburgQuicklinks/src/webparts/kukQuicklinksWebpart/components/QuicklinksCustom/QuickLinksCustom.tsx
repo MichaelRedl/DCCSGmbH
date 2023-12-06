@@ -15,9 +15,11 @@ export interface IQuickLinksCustomState {
 }
 
 export default class QuickLinksCustom extends React.Component<IQuickLinksCustomProps, IQuickLinksCustomState> {
+  public createPersonalLinksList: boolean = false;
+  public createQuicklinksList: boolean = false;
 
- // private siteUrl: string = this.props.context.pageContext.web.absoluteUrl;   //DCCS siteUrl
-  private siteUrl: string = 'https://xintranet.kepleruniklinikum.at/sites/Landing'; //KUK siteUrl
+  private siteUrl: string = this.props.context.pageContext.web.absoluteUrl;   //DCCS siteUrl
+ // private siteUrl: string = 'https://xintranet.kepleruniklinikum.at/sites/Landing'; //KUK siteUrl
   // tslint:disable-next-line:no-any
   constructor(props: IQuickLinksCustomProps) {
     super(props);
@@ -30,7 +32,12 @@ export default class QuickLinksCustom extends React.Component<IQuickLinksCustomP
 
   public componentDidMount(): void {
     this.getCurrentUserPrincipalName();
+
   }
+
+
+
+
 
   public handleClick = (rediretionLink: string, event: React.MouseEvent<HTMLButtonElement>) => {
     window.open(rediretionLink, '_blank');
@@ -244,8 +251,8 @@ export default class QuickLinksCustom extends React.Component<IQuickLinksCustomP
           <div
             className={styles.box}
             style={{
-              width: boxWidthString, // Replace '100px' with whatever width you prefer
-              ...index === this.state.hoveredBoxIndex ? { borderBottom: '2px solid red' } : {}
+              width: boxWidthString, 
+              ...index === this.state.hoveredBoxIndex ? { borderBottom: '2px solid rgb(45,91,167)' } : {}
             }}
             key={index}
             onClick={() => this.handleClick(boxDataItem.boxTitleLink, null)}

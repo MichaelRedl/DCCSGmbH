@@ -20,8 +20,8 @@ export interface EditQuicklinksState {
 }
 
 export default class EditQuicklinks extends React.Component<EditQuicklinksProps, EditQuicklinksState> {
-  //private siteUrl: string = this.props.context.pageContext.web.absoluteUrl; //DCCS SiteUrl
-  private siteUrl: string = 'https://xintranet.kepleruniklinikum.at/sites/Landing'; //KUK siteUrl
+  private siteUrl: string = this.props.context.pageContext.web.absoluteUrl; //DCCS SiteUrl
+  //private siteUrl: string = 'https://xintranet.kepleruniklinikum.at/sites/Landing'; //KUK siteUrl
   private personalLinksItemId: string = '';
   constructor(props: EditQuicklinksProps) {
     super(props);
@@ -361,7 +361,7 @@ export default class EditQuicklinks extends React.Component<EditQuicklinksProps,
 
               {this.state.boxData.map((boxDataItem, index) => (
 
-                <div className={styles.box} style={index === this.state.hoveredBoxIndex ? { borderBottom: '2px solid red' } : {}} key={index}
+                <div className={styles.box} style={index === this.state.hoveredBoxIndex ? { borderBottom: '2px solid rgb(45,91,167)' } : {}} key={index}
                 onClick={() => this.handleClick(boxDataItem.boxTitle, boxDataItem.boxTitleLink, boxDataItem.boxImageLink, boxDataItem.boxId, boxDataItem.linkType, null)}
                 onMouseEnter={() => this.handleMouseEnter(index)}
                 onMouseLeave={this.handleMouseLeave}>
@@ -388,7 +388,7 @@ export default class EditQuicklinks extends React.Component<EditQuicklinksProps,
 
               {this.state.boxData2.map((boxDataItem2, index2) => (
 
-                <div className={styles.box} style={index2 === this.state.hoveredBoxIndex2 ? { borderBottom: '2px solid red' } : {}} key={index2}
+                <div className={styles.box} style={index2 === this.state.hoveredBoxIndex2 ? { borderBottom: '2px solid rgb(45,91,167)' } : {}} key={index2}
                 onClick={() => this.handleClick2(boxDataItem2.boxTitle, boxDataItem2.boxTitleLink, boxDataItem2.boxImageLink, boxDataItem2.boxId, boxDataItem2.linkType, null)}
                 onMouseEnter={() => this.handleMouseEnter2(index2)}
                 onMouseLeave={this.handleMouseLeave2}>
