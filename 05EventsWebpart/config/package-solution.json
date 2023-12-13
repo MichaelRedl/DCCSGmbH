@@ -1,0 +1,12 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
+  "solution": {
+    "name": "kuk-events-webpart-client-side-solution",
+    "id": "2e18a152-e6ea-4953-991e-6fba123cb470",
+    "version": "1.0.0.12",
+    "includeClientSideAssets": true
+  },
+  "paths": {
+    "zippedPackage": "solution/kuk-events-webpart.sppkg"
+  }
+}

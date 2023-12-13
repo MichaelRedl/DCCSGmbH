@@ -1,0 +1,11 @@
+{
+  "@microsoft/generator-sharepoint": {
+    "isCreatingSolution": true,
+    "environment": "onprem19",
+    "version": "1.10.0",
+    "libraryName": "kuk-events-webpart",
+    "libraryId": "2e18a152-e6ea-4953-991e-6fba123cb470",
+    "packageManager": "npm",
+    "componentType": "webpart"
+  }
+}

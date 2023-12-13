@@ -1,0 +1,18 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/config.2.0.schema.json",
+  "version": "2.0",
+  "bundles": {
+    "kuk-events-webpart-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/kukEventsWebpart/KukEventsWebpartWebPart.js",
+          "manifest": "./src/webparts/kukEventsWebpart/KukEventsWebpartWebPart.manifest.json"
+        }
+      ]
+    }
+  },
+  "externals": {},
+  "localizedResources": {
+    "KukEventsWebpartWebPartStrings": "lib/webparts/kukEventsWebpart/loc/{locale}.js"
+  }
+}
