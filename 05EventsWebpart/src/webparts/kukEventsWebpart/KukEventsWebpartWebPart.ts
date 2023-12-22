@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as ReactDom from 'react-dom';
-import { Version } from '@microsoft/sp-core-library';
+// import { Version } from '@microsoft/sp-core-library';
 import {
   BaseClientSideWebPart,
   IPropertyPaneConfiguration,
@@ -20,17 +20,6 @@ export interface IKukEventsWebpartWebPartProps {
 
 export default class KukEventsWebpartWebPart extends BaseClientSideWebPart<IKukEventsWebpartWebPartProps> {
 
-  protected onInit(): Promise<void> {
-    return super.onInit().then(_ => {
-      if (!this.properties.heading) {
-        this.properties.heading = "Events";
-      }
-      if (!this.properties.headingsize) {
-        this.properties.headingsize = 24;
-      }
-    });
-  }
-
   public render(): void {
     const element: React.ReactElement<IKukEventsWebpartProps > = React.createElement(
       KukEventsWebpart,
@@ -45,13 +34,20 @@ export default class KukEventsWebpartWebPart extends BaseClientSideWebPart<IKukE
     ReactDom.render(element, this.domElement);
   }
 
+  protected onInit(): Promise<void> {
+    return super.onInit().then(_ => {
+      if (!this.properties.heading) {
+        this.properties.heading = 'Events';
+      }
+      if (!this.properties.headingsize) {
+        this.properties.headingsize = 24;
+      }
+    });
+  }
+
   protected onDispose(): void {
     ReactDom.unmountComponentAtNode(this.domElement);
   }
-
-  /*protected get dataVersion(): Version {
-    return Version.parse('1.0');
-  }*/
 
   protected getPropertyPaneConfiguration(): IPropertyPaneConfiguration {
     return {
@@ -65,19 +61,17 @@ export default class KukEventsWebpartWebPart extends BaseClientSideWebPart<IKukE
               groupName: strings.BasicGroupName,
               groupFields: [
                 PropertyPaneTextField('heading', {
-                  label: "Überschrift", // Your custom label
-                  value: this.properties.heading, // Default value if any
-                //  onGetErrorMessage: this.validateNumber, // Validation (if necessary)
-                  deferredValidationTime: 500, // Defers validation (useful if validation involves server-side calls)
-                  //inputType: PropertyPaneTextFieldInputType.Number // Setting input type as number
+                  label: 'Überschrift',
+                  value: this.properties.heading,
+                  deferredValidationTime: 500
                 }),
                 PropertyPaneSlider('headingsize', {
-                  label: "Schriftgröße",
+                  label: 'Schriftgröße',
                   min: 12,
                   max: 60,
                   step: 1,
                   value: this.properties.headingsize
-                }),
+                })
               ]
             }
           ]
