@@ -1,15 +1,15 @@
-$siteUrl = "https://xintranet.kepleruniklinikum.at/abteilungen/KSpace" #KUK
-$listName = "Abteilungen"
+$siteUrl = "https://devse.dccs-demo.at/sites/sitecoladmin" #DCCS
+$listName = "Site Collections"
 $templateFilePath = $PSScriptRoot
-$sharePointUrl = "https://xintranet.kepleruniklinikum.at/sites/" #KUK
-$templateLibraryUrl = "/abteilungen/KSpace/Templates" #KUK
+$sharePointUrl = "https://devse.dccs-demo.at/sites/" #DCCS
+$templateLibraryUrl = "/sites/sitecoladmin/Templates" #DCCS
 
 # Load SharePoint PowerShell snap-in if not already loaded
-if ((Get-PSSnapin -Name "Microsoft.SharePoint.PowerShell" -ErrorAction SilentlyContinue) -eq $null) {
-    Add-PSSnapin "Microsoft.SharePoint.PowerShell"
-}
+#if ((Get-PSSnapin -Name "Microsoft.SharePoint.PowerShell" -ErrorAction SilentlyContinue) -eq $null) {
+#    Add-PSSnapin "Microsoft.SharePoint.PowerShell"
+#}
 
-# Get the SharePoint web and list
+# cdGet the SharePoint web and list
 $web = Get-SPWeb $siteUrl
 $list = $web.Lists[$listName]
 
@@ -44,24 +44,80 @@ foreach ($item in $list.Items) {
 
             # Create Link DML and Link DMS
             $itemId = $item["ID"] | Out-String
-            $linkDmlUrl = "https://dml.kepleruniklinikum.at/sites/" + $newUrlSiteName
-            $linkDmlDesc = "https://dml.kepleruniklinikum.at/sites/"  + $newUrlSiteName
-            $linkDmsUrl = "https://dms.kepleruniklinikum.ad/dms/dokumentationen"  + $newUrlSiteName
-            $linkDmsDesc = "https://dms.kepleruniklinikum.ad/dms/dokumentationen"  + $newUrlSiteName
             
             # Update the list item
-            $null = Set-PnPListItem -List $listName -Identity $itemId -Values @{"Link_x0020_DML" = $linkDmlUrl; "Link_x0020_DMS" = $linkDmsUrl; "URL" = $newSiteUrl}
+            $null = Set-PnPListItem -List $listName -Identity $itemId -Values @{"URL" = $newSiteUrl}
             Disconnect-PnPOnline
 
             # Apply the template
             Connect-PnPOnline -Url $newSiteUrl -CurrentCredentials
-            $null = Apply-PnPProvisioningTemplate -Path $templateFilePath
+            Get-PnPNavigationNode -Location QuickLaunch | Remove-PnPNavigationNode -Force
+            $null = Apply-PnPProvisioningTemplate -Path $templateFilePath -WarningAction SilentlyContinue
             Remove-Item -Path $templateFilePath -Force
-           
 
-            # Add LinkDML and LinkDMS to Abteilungslinks of newly created site. 
-             $null = Add-PnPListItem -List "Abteilungslinks"-Values @{"URL" = $linkDmlUrl; "Title" = "DML"}
-             $null = Add-PnPListItem -List "Abteilungslinks"-Values @{"URL" = $linkDmsUrl; "Title" = "DMS"}
+
+
+            # Create AD Groups
+            Connect-PnPOnline -Url $siteUrl -CurrentCredentials
+            $listItems = Get-PnPListItem -List "Site Collections"
+
+            # Function to create AD group and add users
+            Function CreateADGroupAndAddUsers {
+                param (
+                    [string]$groupName,
+                    [array]$users
+                )
+
+                # Check if group exists
+                $group = Get-ADGroup -Filter { Name -eq $groupName } -ErrorAction SilentlyContinue
+
+                # Create group if not exists
+                if (-not $group) {
+                    New-ADGroup -Name $groupName -GroupScope Global -Path "OU=SPSE Service Accounts,DC=dccs-demo,DC=at" # Change the path as needed
+                }
+
+                # Add users to group
+                foreach ($user in $users) {
+                    Add-ADGroupMember -Identity $groupName -Members $user # Assuming UserPrincipalName is available
+                }
+            }
+
+            # Process each item in the list
+                foreach ($item in $listItems) {
+                    # Extract users from each column
+                    $owners = $item["Owner"] 
+                    $ownerArr = @()
+                    foreach ($owner in $owners) {
+                        $user = Get-PnPUser -Identity $owner.LookupId
+                        $ownerArr += $user.LoginName -replace '.*\\', ''
+                    }
+
+                    $members = $item["Member"]
+                    $memberArr = @()
+                    foreach ($member in $members) {
+                        $user = Get-PnPUser -Identity $member.LookupId
+                        $memberArr += $user.LoginName -replace '.*\\', ''
+                    }
+                    $readers = $item["Reader"]
+                    $readerArr = @()
+                    foreach ($reader in $readers) {
+                        $user = Get-PnPUser -Identity $reader.LookupId 
+                        $readerArr += $user.LoginName -replace '.*\\', ''
+                    }
+
+                    $OwnerGroupName = $newUrlSiteName + " Owners"
+                    $MemberGroupName = $newUrlSiteName + " Members"
+                    $ReaderGroupName = $newUrlSiteName + " Readers"
+                    CreateADGroupAndAddUsers -groupName $OwnerGroupName -users $ownerArr
+                    CreateADGroupAndAddUsers -groupName $MemberGroupName -users $memberArr
+                    CreateADGroupAndAddUsers -groupName $ReaderGroupName -users $readerArr
+
+                     $null = Set-PnPListItem -List $listName -Identity $itemId -Values @{"OwnerGroupName" = $OwnerGroupName; "MemberGroupName" = $MemberGroupName; "ReaderGroupName" = $ReaderGroupName}
+                }
+
+
+
+
 
             Write-Host "Site collection created and template applied at $newSiteUrl" -ForegroundColor Green
         } catch {

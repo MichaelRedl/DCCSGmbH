@@ -1,5 +1,5 @@
-$docLibUrl = "https://dev19.dccs-demo.at/sites/sitecoladmin/Templates" #DCCS
-$adminSiteUrl = "https://xintranet.kepleruniklinikum.at/abteilungen/KSpace" #DCCS
+$docLibUrl = "https://devse.dccs-demo.at/sites/sitecoladmin/Templates" #DCCS
+$adminSiteUrl = "https://devse.dccs-demo.at/sites/sitecoladmin" #DCCS
 
 Add-Type -AssemblyName System.Windows.Forms
 
@@ -51,14 +51,14 @@ if ($result -eq [System.Windows.Forms.DialogResult]::OK)
 
 
     Connect-PnPOnline -Url $siteUrl -CurrentCredentials
-    Get-PnPProvisioningTemplate -Out $savePath # -Handlers Lists, Pages, Theme, SiteSettings, PageContents
+    Get-PnPProvisioningTemplate -Out $savePath -ExcludeHandlers TermGroups # -Handlers Lists, Pages, Theme, SiteSettings, PageContents
 
     $fileUrl = $docLibUrl + "/" + $templateName + ".pnp"
     $fileUrl = $docLibUrl + "/" + $templateName + ".pnp"
 
     # Upload the template to SharePoint
     Connect-PnPOnline -Url $adminSiteUrl -CurrentCredentials
-    Add-PnPFile -Path $savePath -Folder "/Templates" -NewFileName ($templateName + ".pnp") -Values @{"Title" =$templateName}
+    Add-PnPFile -Path $savePath -Folder "/Templates" -NewFileName ($templateName + ".pnp") -Values @{"TemplateName" =$templateName}
 
     # Clean up: Delete the local file
     Remove-Item -Path $savePath -Force

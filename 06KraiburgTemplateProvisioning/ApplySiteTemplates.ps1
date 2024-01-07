@@ -1,13 +1,13 @@
-$siteUrl = "https://xintranet.kepleruniklinikum.at/abteilungen/KSpace" #KUK
-$listName = "Abteilungen"
+$siteUrl = "https://devse.dccs-demo.at/sites/sitecoladmin" #DCCS
+$listName = "Site Collections"
 $templateFilePath = $PSScriptRoot
-$sharePointUrl = "https://xintranet.kepleruniklinikum.at/sites/" #KUK
-$templateLibraryUrl = "/abteilungen/KSpace/Templates" #KUK
+$sharePointUrl = "https://devse.dccs-demo.at/sites/" #DCCS
+$templateLibraryUrl = "/sites/sitecoladmin/Templates" #DCCS
 
 # Load SharePoint PowerShell snap-in if not already loaded
-if ((Get-PSSnapin -Name "Microsoft.SharePoint.PowerShell" -ErrorAction SilentlyContinue) -eq $null) {
-    Add-PSSnapin "Microsoft.SharePoint.PowerShell"
-}
+#if ((Get-PSSnapin -Name "Microsoft.SharePoint.PowerShell" -ErrorAction SilentlyContinue) -eq $null) {
+#    Add-PSSnapin "Microsoft.SharePoint.PowerShell"
+#}
 
 # Get the SharePoint web and list
 $web = Get-SPWeb $siteUrl
@@ -15,7 +15,9 @@ $list = $web.Lists[$listName]
 
 foreach ($item in $list.Items) {
     $siteCollectionUrl = $item["URL"]
-    $templateName = $item["Template"]
+    $templateName = $item["Select_x0020_Template"] + ".pnp"
+    $hashtagIndex = $templateName.IndexOf('#')
+    $templateName = $templateName.substring($hashtagIndex+1)
     $updateTemplate = $item["Update_x0020_Template"]
     $itemId = $item["ID"]
     $commaIndex = $siteCollectionUrl.IndexOf(',')
@@ -37,7 +39,7 @@ foreach ($item in $list.Items) {
             $templateFilePath = $templateFilePath + "\$templateName"
             Connect-PnPOnline -Url $substring -CurrentCredentials
             Get-PnPNavigationNode -Location QuickLaunch | Remove-PnPNavigationNode -Force
-            $null = Apply-PnPProvisioningTemplate -Path $templateFilePath
+            $null = Apply-PnPProvisioningTemplate -Path $templateFilePath -WarningAction SilentlyContinue
             Remove-Item -Path $templateFilePath -Force
             Disconnect-PnPOnline
             Connect-PnPOnline -Url $siteUrl -CurrentCredentials
