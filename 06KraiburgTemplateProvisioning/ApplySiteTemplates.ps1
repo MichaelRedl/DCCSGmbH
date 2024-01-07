@@ -32,7 +32,6 @@ foreach ($item in $list.Items) {
      if($updateTemplate -eq "yes"){
         try {
             # Download and apply the template
-            Write-Host "$templateLibraryUrl/$templateName"
             Connect-PnPOnline -Url $siteUrl -CurrentCredentials
             Get-PnPFile -Url "$templateLibraryUrl/$templateName" -Path $templateFilePath -AsFile
             Disconnect-PnPOnline
