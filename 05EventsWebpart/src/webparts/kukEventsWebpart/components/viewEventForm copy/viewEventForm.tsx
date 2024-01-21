@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styles from '../KukEventsWebpart.module.scss';
 import { IviewEventsProps } from './viewEventFormProps';
-import { DatePicker, DayOfWeek, IDatePickerStrings, TextField, Dropdown, IDropdownOption, PrimaryButton }
+import { DatePicker, DayOfWeek, IDatePickerStrings, TextField, Dropdown, IDropdownOption, PrimaryButton, Checkbox }
     from 'office-ui-fabric-react';
 import { PeoplePicker, PrincipalType } from '@pnp/spfx-controls-react/lib/PeoplePicker';
 import { sp } from '@pnp/sp';
@@ -37,6 +37,7 @@ export interface IviewEventFormState {
     selectedDate2: Date;
     hh2: string;
     mm2: string;
+    beschreibung: string;
     veranstalter: string;
     internerVortragende: string;
     internerVortragendeMail: string[];
@@ -50,6 +51,12 @@ export interface IviewEventFormState {
     isEditMode: boolean;
     ortOptions: IDropdownOption[];
     firstLoad: boolean;
+    selectedRecurrence: string;
+    isSeriesEvent: boolean;
+    seriesEndDate: Date;
+    recurrenceOptions: { key: string; text: string }[];
+    seriesID: string;
+    buttonsVisible: boolean;
 }
 
 export default class ViewEventForm extends React.Component<IviewEventsProps, IviewEventFormState> {
@@ -66,6 +73,7 @@ export default class ViewEventForm extends React.Component<IviewEventsProps, Ivi
             mm1: undefined,
             hh2: undefined,
             mm2: undefined,
+            beschreibung: undefined,
             veranstalter: undefined,
             internerVortragende: undefined,
             internerVortragendeMail: undefined,
@@ -78,7 +86,17 @@ export default class ViewEventForm extends React.Component<IviewEventsProps, Ivi
             dateErrorShowing: false,
             isEditMode: false,
             ortOptions: [],
-            firstLoad: true
+            firstLoad: true,
+            selectedRecurrence: undefined,
+            isSeriesEvent: undefined,
+            seriesEndDate: undefined,
+            recurrenceOptions: [
+                { key: 'daily', text: 'Täglich' },
+                { key: 'weekly', text: 'Wöchentlich' },
+                { key: 'monthly', text: 'Monatlich' },
+            ],
+            seriesID: undefined,
+            buttonsVisible: true
         };
     }
 
@@ -241,7 +259,16 @@ export default class ViewEventForm extends React.Component<IviewEventsProps, Ivi
                         {this.state.dateErrorShowing && (<div className={styles.DateError}>
                             Das Enddatum darf nicht vor dem Startdatum liegen!</div>)}
 
-                        <TextField label='Veranstalter' value={this.state.veranstalter} onChange={this.handleVeranstalterChange}
+                        <TextField
+                            multiline
+                            rows={6}
+                            label='Beschreibung'
+                            value={this.state.beschreibung}
+                            onChanged={this.handleBeschreibungChange}
+                            disabled={!this.state.isEditMode}
+                        />
+
+                        <TextField label='Veranstalter' value={this.state.veranstalter} onChanged={this.handleVeranstalterChange}
                             disabled={!this.state.isEditMode} />
                         <div style={!this.state.isEditMode ? { "pointerEvents": "none" } : {}}>
                             <PeoplePicker
@@ -252,9 +279,10 @@ export default class ViewEventForm extends React.Component<IviewEventsProps, Ivi
                                 showtooltip={true}
                                 showHiddenInUI={false}
                                 principleTypes={[PrincipalType.User]}
-                                selectedItems={this.handleInternerVortragendeChange}
+                                selectedItems={(items) => this.handleInternerVortragendeChange(items)}
                                 defaultSelectedUsers={this.state.internerVortragendeMail}
                                 disabled={!this.state.isEditMode}
+
                             />
                         </div>
                         <div style={!this.state.isEditMode ? { "pointerEvents": "none" } : {}}>
@@ -306,13 +334,60 @@ export default class ViewEventForm extends React.Component<IviewEventsProps, Ivi
                             options={this.state.ortOptions}
                             {...(this.state.firstLoad ? { selectedKey: Number(this.state.Ort) } : {})}
                         />
+                        <div className={styles.height10p}></div>
+                        {this.state.isSeriesEvent && (
+                            <Checkbox
+                                label="Serie?"
+                                checked={true}
+                                disabled={true}
+                            />
+                        )}
 
-                        {this.state.isEditMode && (
-                            <button className={styles.saveButton} onClick={this.validateForm}
-                            >Speichern</button>)}
-                        {!this.state.isEditMode && (
-                            <button className={styles.saveButton} onClick={this.editForm}
-                            >Bearbeiten</button>)}
+                        {this.state.isSeriesEvent && (
+                            <div className={styles.flex2}>
+                                <div>
+                                    <label></label>
+                                    {this.state.recurrenceOptions.map(option => (
+                                        <div key={option.key}>
+                                            <input
+                                                type="radio"
+                                                name="recurrencePattern"
+                                                value={option.key}
+                                                checked={this.state.selectedRecurrence === option.key}
+                                                disabled={true}
+                                            />
+                                            {option.text}
+                                        </div>
+                                    ))}
+                                </div>
+                                <DatePicker
+                                    firstDayOfWeek={DayOfWeek.Monday}
+                                    strings={DayPickerStrings}
+                                    formatDate={this.formatDate}
+                                    label="Endet am:"
+                                    value={this.state.seriesEndDate}
+                                    disabled={true}
+                                />
+                            </div>
+                        )}
+
+                        <div className={styles.flex2}>
+                            {this.state.isEditMode && !this.state.isSeriesEvent && this.state.buttonsVisible && (
+                                <button className={styles.saveButton} onClick={this.validateForm}
+                                >Speichern</button>)}
+                            {!this.state.isEditMode && !this.state.isSeriesEvent && this.state.buttonsVisible && (
+                                <button className={styles.saveButton} onClick={this.editForm}
+                                >Bearbeiten</button>)}
+                            {this.state.buttonsVisible && (
+                                <button className={`${styles.saveButton} ${styles.marginRight}`} onClick={this.deleteEvent}
+                                >Löschen</button>)}
+                        </div>
+                        {!this.state.buttonsVisible && (
+                            <div>
+                                <div className={styles.height10p}></div>
+                                <div>Bitte warten Sie, bis alle Events gelöscht worden sind. Dies kann einige Sekunden dauern. Dieses Fenster schließt sich automatisch.</div>
+                            </div>
+                        )}
                         <div className={styles.height30p}></div>
                     </div>
 
@@ -321,6 +396,36 @@ export default class ViewEventForm extends React.Component<IviewEventsProps, Ivi
         );
 
     }
+
+    private deleteEvent = async () => {
+        this.setState({ buttonsVisible: false });
+        if (this.state.isSeriesEvent) {
+            try {
+                const itemsToDelete = await sp.web.lists.getByTitle("Events").items
+                    .filter(`substringof('${this.state.seriesID}', SeriesEventData)`)
+                    .get();
+
+                for (const item of itemsToDelete) {
+                    await sp.web.lists.getByTitle("Events").items.getById(item.Id).delete();
+                }
+
+                this.props.componentDidMount();
+                this.props.handleButtonClick();
+            } catch (error) {
+                console.error("Error deleting series events: ", error);
+            }
+        } else {
+            try {
+                await sp.web.lists.getByTitle("Events").items.getById(Number(this.props.formItemId)).delete();
+                this.props.componentDidMount();
+                this.props.handleButtonClick();
+            }
+            catch (error) {
+                console.error("Error deleting item: ", error);
+            }
+        }
+    };
+
 
     private editForm = () => {
         const mode: boolean = !this.state.isEditMode;
@@ -336,8 +441,12 @@ export default class ViewEventForm extends React.Component<IviewEventsProps, Ivi
         this.setState({ Ort: String(item.key), OrtName: item.text });
     }
 
-    private handleVeranstalterChange = (event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => {
-        this.setState({ veranstalter: newValue || '' });
+    private handleBeschreibungChange = (event: string) => {
+        this.setState({ beschreibung: event });
+    };
+
+    private handleVeranstalterChange = (event: string) => {
+        this.setState({ veranstalter: event || '' });
     }
 
     private handleDateChange = (date: Date | null | undefined, dateType: 'selectedDate' | 'selectedDate2') => {
@@ -388,13 +497,17 @@ export default class ViewEventForm extends React.Component<IviewEventsProps, Ivi
         this.setState({ Kategorien: katArray });
     }
 
-    private handleInternerVortragendeChange = (items) => {
+    private handleInternerVortragendeChange(items) {
         if (items && items.length > 0) {
             let mailArray: string[] = [];
             for (let i = 0; i < items.length; i++) {
-                mailArray.push(items[i].secondaryText);
+                if (mailArray.indexOf(items[i].secondaryText) === -1 && items[i].secondaryText != "") {
+                    mailArray.push(items[i].secondaryText);
+                }
             }
             this.setState({ internerVortragendeMail: mailArray });
+
+
         }
     }
 
@@ -402,7 +515,9 @@ export default class ViewEventForm extends React.Component<IviewEventsProps, Ivi
         if (items && items.length > 0) {
             let mailArray: string[] = [];
             for (let i = 0; i < items.length; i++) {
-                mailArray.push(items[i].secondaryText);
+                if (mailArray.indexOf(items[i].secondaryText) === -1 && items[i].secondaryText != "") {
+                    mailArray.push(items[i].secondaryText);
+                }
             }
             this.setState({ externerVortragendeMail: mailArray });
         }
@@ -415,7 +530,7 @@ export default class ViewEventForm extends React.Component<IviewEventsProps, Ivi
             alert("Please fill in all required fields.");
             return false;
         }
-        if (this.state.selectedDate2 < this.state.selectedDate) {
+        if (this.state.selectedDate2.getDate() < this.state.selectedDate.getDate()) {
             this.setState({ dateErrorShowing: true });
             return false;
         }
@@ -434,6 +549,8 @@ export default class ViewEventForm extends React.Component<IviewEventsProps, Ivi
             this.updateEvent(Number(this.props.formItemId));
             return true;
         }
+        this.updateEvent(Number(this.props.formItemId));
+        return true;
     }
 
     private saveEvent = async () => {
@@ -455,7 +572,8 @@ export default class ViewEventForm extends React.Component<IviewEventsProps, Ivi
                 ExternerVortragendeMail: this.state.externerVortragendeMail,
                 Zielgruppe: this.state.Zielgruppe,
                 Kategorien: this.state.Kategorien,
-                Ort: this.state.Ort
+                Ort: this.state.Ort,
+                OrtName: this.state.OrtName
             });
 
             // Save to SharePoint list
@@ -500,7 +618,8 @@ export default class ViewEventForm extends React.Component<IviewEventsProps, Ivi
                 Title: this.state.title,
                 EventDate: eventDate,
                 EndDate: endDate,
-                EventData: otherData
+                EventData: otherData,
+                Description: this.state.beschreibung
             });
 
             this.props.componentDidMount();
@@ -528,6 +647,7 @@ export default class ViewEventForm extends React.Component<IviewEventsProps, Ivi
             let mm2 = String(selectedDate2.getMinutes());
             if (mm2.length < 2) { mm2 = 0 + mm2 }
             const otherData = JSON.parse(item.EventData);
+            const seriesEventData = JSON.parse(item.SeriesEventData);
             this.setState({
                 title,
                 selectedDate,
@@ -543,6 +663,12 @@ export default class ViewEventForm extends React.Component<IviewEventsProps, Ivi
             this.setState({ Zielgruppe: otherData.Zielgruppe });
             this.setState({ Kategorien: otherData.Kategorien });
             this.setState({ Ort: String(otherData.Ort) });
+            this.setState({ OrtName: String(otherData.OrtName) });
+            this.setState({ beschreibung: item.Description });
+            this.setState({ selectedRecurrence: seriesEventData.selectedRecurrence || undefined });
+            this.setState({ seriesEndDate: new Date(seriesEventData.seriesEndDate) || undefined });
+            this.setState({ isSeriesEvent: seriesEventData.isSeriesEvent || undefined });
+            this.setState({ seriesID: seriesEventData.seriesID || undefined });
             // if(otherData.eve)
         } catch (error) {
             console.error("Error loading data: ", error);

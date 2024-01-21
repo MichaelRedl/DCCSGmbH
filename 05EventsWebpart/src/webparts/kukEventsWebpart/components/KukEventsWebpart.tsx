@@ -299,7 +299,7 @@ export default class KukEventsWebpart extends React.Component<IKukEventsWebpartP
                 <div className={styles.dateDiv2} style={eventsItem.day === eventsItem.today ?
                   { color: 'RGBA(230,0,0,1)' } : {}}>
                   <div className={styles.date2}>{eventsItem.day}. {eventsItem.month}</div>
-                  <div className={styles.borderBottom}></div>
+                  <div className={styles.borderBottom2}></div>
                   <div className={styles.date3}>{eventsItem.day2}. {eventsItem.month2}</div>
                 </div>
               }
@@ -312,8 +312,8 @@ export default class KukEventsWebpart extends React.Component<IKukEventsWebpartP
                 <div className={styles.fromUntil}>{eventsItem.fromUntil}</div>
               </div>
               <div className={styles.locationContainer}>
-                {eventsItem.eventData.OrtName && (<img alt='altname' className={styles.icon} src={locationIcon}></img>)}
-                {eventsItem.eventData.OrtName && (<div className={styles.location}>{eventsItem.eventData.OrtName}</div>)}
+                {eventsItem.eventData.OrtName && eventsItem.eventData.OrtName != "undefined" && (<img alt='altname' className={styles.icon} src={locationIcon}></img>)}
+                {eventsItem.eventData.OrtName && eventsItem.eventData.OrtName != "undefined" && (<div className={styles.location}>{eventsItem.eventData.OrtName}</div>)}
               </div>
 
               <div className={styles.width100}>
@@ -377,9 +377,17 @@ export default class KukEventsWebpart extends React.Component<IKukEventsWebpartP
       await sp.web.lists.getByTitle("Events").fields.addMultilineText("EventData", 6, false, false, false, false);
 
     }
+    try {
+      // Attempt to get the 'EventData' field from the 'Events' list
+      await sp.web.lists.getByTitle("Events").fields.getByTitle("SeriesEventData").get();
+    } catch (error) {
+      // Check if the error is because the field does not exist
 
+      await sp.web.lists.getByTitle("Events").fields.addText("SeriesEventData");
 
+    }
   }
+  
 
 
 }

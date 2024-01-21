@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styles from '../KukEventsWebpart.module.scss';
 import { InewEventsProps } from './newEventFormProps';
-import { DatePicker, DayOfWeek, IDatePickerStrings, TextField, Dropdown, IDropdownOption, PrimaryButton }
+import { DatePicker, DayOfWeek, IDatePickerStrings, TextField, Dropdown, IDropdownOption, PrimaryButton, Checkbox }
     from 'office-ui-fabric-react';
 import { PeoplePicker, PrincipalType } from '@pnp/spfx-controls-react/lib/PeoplePicker';
 import { sp } from '@pnp/sp';
@@ -37,6 +37,7 @@ export interface InewEventFormState {
     selectedDate2: Date;
     hh2: string;
     mm2: string;
+    beschreibung: string;
     veranstalter: string;
     internerVortragende: string[];
     internerVortragendeMail: string[];
@@ -47,7 +48,16 @@ export interface InewEventFormState {
     Ort: string;
     OrtName: string;
     dateErrorShowing: boolean;
+    dateErrorShowing2: boolean;
     ortOptions: IDropdownOption[];
+    buttonsVisible: boolean;
+
+    //Series Event States
+    isSeriesEvent: boolean;
+    seriesEndDate: Date;
+    recurrencePattern: string;
+    recurrenceOptions: { key: string; text: string }[];
+    selectedRecurrence: string;
 }
 
 export default class NewEventForm extends React.Component<InewEventsProps, InewEventFormState> {
@@ -64,6 +74,7 @@ export default class NewEventForm extends React.Component<InewEventsProps, InewE
             mm1: undefined,
             hh2: undefined,
             mm2: undefined,
+            beschreibung: undefined,
             veranstalter: undefined,
             internerVortragende: undefined,
             internerVortragendeMail: undefined,
@@ -74,7 +85,20 @@ export default class NewEventForm extends React.Component<InewEventsProps, InewE
             Ort: undefined,
             OrtName: undefined,
             dateErrorShowing: false,
-            ortOptions: []
+            dateErrorShowing2: false,
+            ortOptions: [],
+
+            //Series Event States
+            isSeriesEvent: false,
+            seriesEndDate: undefined,
+            recurrencePattern: 'daily',
+            recurrenceOptions: [
+                { key: 'daily', text: 'Täglich' },
+                { key: 'weekly', text: 'Wöchentlich' },
+                { key: 'monthly', text: 'Monatlich' },
+            ],
+            selectedRecurrence: 'daily',
+            buttonsVisible: true
         };
     }
 
@@ -226,6 +250,16 @@ export default class NewEventForm extends React.Component<InewEventsProps, InewE
                         </div>
                         {this.state.dateErrorShowing && (<div className={styles.DateError}>
                             Das Enddatum darf nicht vor dem Startdatum liegen!</div>)}
+                        {this.state.dateErrorShowing2 && (<div className={styles.DateError}>
+                           Serien-Events müssen jeweils am selben Tag stattfinden!</div>)}
+
+                        <TextField
+                            multiline
+                            rows={6}
+                            label='Beschreibung'
+                            value={this.state.beschreibung}
+                            onChanged={this.handleBeschreibungChange}
+                        />
 
                         <TextField label='Veranstalter' value={this.state.veranstalter} onChanged={this.handleVeranstalterChange} />
                         <PeoplePicker
@@ -276,10 +310,56 @@ export default class NewEventForm extends React.Component<InewEventsProps, InewE
                         <Dropdown label='Ort'
                             onChanged={this.handleOrtChange}
                             options={this.state.ortOptions} />
+                        <div className={styles.height10p}></div>
+                        <Checkbox
+                            label="Serie?"
+                            checked={this.state.isSeriesEvent}
+                            onChange={this.handleSeriesEventChange}
+                        />
+                        {this.state.isSeriesEvent && (
+                            <div className={styles.flex2}>
+                                <div>
+                                    <label></label>
+                                    {this.state.recurrenceOptions.map(option => (
+                                        <div key={option.key}>
+                                            <input
+                                                type="radio"
+                                                name="recurrencePattern"
+                                                value={option.key}
+                                                checked={this.state.selectedRecurrence === option.key}
+                                                onChange={this.handleRecurrencePatternChange}
+                                            />
+                                            {option.text}
+                                        </div>
+                                    ))}
+                                </div>
+                                <DatePicker
+                                    firstDayOfWeek={DayOfWeek.Monday}
+                                    strings={DayPickerStrings}
+                                    formatDate={this.formatDate}
+                                    label="Endet am:"
+                                    value={this.state.seriesEndDate}
+                                    onSelectDate={this.handleSeriesEndDateChange}
+                                    isRequired={true}
+                                />
+                            </div>
+                        )}
 
-                        <button className={styles.saveButton} onClick={this.validateForm}
-                        >Speichern</button>
+                        {this.state.buttonsVisible && (
+                            <button className={styles.saveButton} onClick={this.validateForm}
+                            >Speichern</button>)}
+                        {!this.state.buttonsVisible && (
+                            <div>
+                                <div className={styles.height10p}></div>
+                                <div>Bitte warten Sie, bis alle Events erstellt worden sind. Dies kann einige Sekunden dauern. Dieses Fenster schließt sich automatisch.</div>
+                            </div>
+                        )}
                         <div className={styles.height30p}></div>
+
+
+
+
+
                     </div>
 
                 </div>
@@ -288,6 +368,24 @@ export default class NewEventForm extends React.Component<InewEventsProps, InewE
 
     }
 
+    private handleSeriesEventChange = (ev: React.FormEvent<HTMLElement>, isChecked: boolean) => {
+        this.setState({ isSeriesEvent: isChecked });
+    };
+
+    private handleRecurrencePatternChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        this.setState({ selectedRecurrence: event.target.value });
+    };
+
+    // ... other handlers remain the same
+
+
+    private handleSeriesEndDateChange = (date: Date | null | undefined) => {
+        if (date) {
+            this.setState({ seriesEndDate: date });
+        }
+    };
+
+
     private handleTitleChange = (newValue: string) => {
         this.setState({ title: newValue || '' });
     }
@@ -295,6 +393,11 @@ export default class NewEventForm extends React.Component<InewEventsProps, InewE
     private handleOrtChange = (item) => {
         this.setState({ Ort: String(item.key), OrtName: item.text });
     }
+
+    private handleBeschreibungChange = (newValue: string) => {
+        this.setState({ beschreibung: newValue || '' });
+    }
+
     private handleVeranstalterChange = (newValue: string) => {
         this.setState({ veranstalter: newValue || '' });
     }
@@ -348,10 +451,13 @@ export default class NewEventForm extends React.Component<InewEventsProps, InewE
     }
 
     private handleInternerVortragendeChange = (items) => {
+
         if (items && items.length > 0) {
             let mailArray: string[] = [];
             for (let i = 0; i < items.length; i++) {
-                mailArray.push(items[i].secondaryText);
+                if (mailArray.indexOf(items[i].secondaryText) === -1 && items[i].secondaryText != "") {
+                    mailArray.push(items[i].secondaryText);
+                }
             }
             this.setState({ internerVortragendeMail: mailArray });
         }
@@ -361,74 +467,198 @@ export default class NewEventForm extends React.Component<InewEventsProps, InewE
         if (items && items.length > 0) {
             let mailArray: string[] = [];
             for (let i = 0; i < items.length; i++) {
-                mailArray.push(items[i].secondaryText);
+                if (mailArray.indexOf(items[i].secondaryText) === -1 && items[i].secondaryText != "") {
+                    mailArray.push(items[i].secondaryText);
+                }
             }
             this.setState({ externerVortragendeMail: mailArray });
         }
     };
 
     private validateForm = () => {
-        if (this.state.title === undefined || this.state.selectedDate === undefined || this.state.selectedDate2 === undefined
-            || this.state.title === "" || this.state.hh1 === undefined || this.state.hh2 === undefined
-            || this.state.mm1 === undefined || this.state.mm2 === undefined) {
-            alert("Please fill in all required fields.");
-            return false;
-        }
-        if (this.state.selectedDate2 < this.state.selectedDate) {
-            this.setState({ dateErrorShowing: true });
-            return false;
-        }
-        if (this.areSameDay(this.state.selectedDate, this.state.selectedDate2)) {
-            if (Number(this.state.hh1) > Number(this.state.hh2)) {
-                this.setState({ dateErrorShowing: true });
+        if (this.state.isSeriesEvent === true) {
+            if (this.state.title === undefined || this.state.selectedDate === undefined || this.state.selectedDate2 === undefined
+                || this.state.title === "" || this.state.hh1 === undefined || this.state.hh2 === undefined
+                || this.state.mm1 === undefined || this.state.seriesEndDate === undefined
+                || this.state.mm2 === undefined) {
+                alert("Bitte füllen Sie alle Pflichtfelder aus.");
                 return false;
             }
-            if (Number(this.state.hh1) == Number(this.state.hh2)) {
-                if (Number(this.state.mm1) > Number(this.state.mm2)) {
+            if (!this.areSameDay(this.state.selectedDate, this.state.selectedDate2)) {
+                this.setState({ dateErrorShowing2: true });
+                return false;
+            }
+            if (this.state.seriesEndDate < this.state.selectedDate) {
+                alert("Das Serien-Enddatum darf nicht vor dem Startdatum liegen.");
+                return false;
+            }
+            if (this.areSameDay(this.state.selectedDate, this.state.selectedDate2)) {
+                if (Number(this.state.hh1) > Number(this.state.hh2)) {
                     this.setState({ dateErrorShowing: true });
                     return false;
                 }
+                if (Number(this.state.hh1) == Number(this.state.hh2)) {
+                    if (Number(this.state.mm1) > Number(this.state.mm2)) {
+                        this.setState({ dateErrorShowing: true });
+                        return false;
+                    }
+                }
             }
+            this.setState({ dateErrorShowing2: false });
+            this.setState({ dateErrorShowing: false });
+            this.saveEvent();
+            return true;
+
+        } else {
+            if (this.state.title === undefined || this.state.selectedDate === undefined || this.state.selectedDate2 === undefined
+                || this.state.title === "" || this.state.hh1 === undefined || this.state.hh2 === undefined
+                || this.state.mm1 === undefined || this.state.mm2 === undefined) {
+                alert("Bitte füllen Sie alle Pflichtfelder aus.");
+                return false;
+            }
+            if (this.state.selectedDate2.getDate() < this.state.selectedDate.getDate()) {
+                this.setState({ dateErrorShowing: true });
+                return false;
+            }
+            if (this.areSameDay(this.state.selectedDate, this.state.selectedDate2)) {
+                if (Number(this.state.hh1) > Number(this.state.hh2)) {
+                    this.setState({ dateErrorShowing: true });
+                    return false;
+                }
+                if (Number(this.state.hh1) == Number(this.state.hh2)) {
+                    if (Number(this.state.mm1) > Number(this.state.mm2)) {
+                        this.setState({ dateErrorShowing: true });
+                        return false;
+                    }
+                }
+            }
+            this.setState({ dateErrorShowing: false });
+            this.saveEvent();
+            return true;
         }
-        this.setState({ dateErrorShowing: false });
-        this.saveEvent();
-        return true;
     }
 
     private saveEvent = async () => {
-        try {
-            // Combine date and time for EventDate
-            const eventDate: Date = this.state.selectedDate;
-            eventDate.setHours(Number(this.state.hh1), Number(this.state.mm1), 0, 0);
+        if (this.state.isSeriesEvent === true) {
+            this.setState({ buttonsVisible: false });
+            try {
+                // Find out how events the series has
+                const { selectedDate, seriesEndDate, selectedRecurrence } = this.state;
 
-            // Combine date and time for EndDate
-            const endDate: Date = this.state.selectedDate2;
-            endDate.setHours(Number(this.state.hh2), Number(this.state.mm2), 0, 0);
+                if (!selectedDate || !seriesEndDate || !selectedRecurrence) {
+                    return 0;
+                }
 
-            // Prepare other data in JSON format
-            const otherData = JSON.stringify({
-                Veranstalter: this.state.veranstalter,
-                InternerVortragender: this.state.internerVortragende,
-                InternerVortragendeMail: this.state.internerVortragendeMail,
-                ExternerVortragender: this.state.externerVortragende,
-                ExternerVortragendeMail: this.state.externerVortragendeMail,
-                Zielgruppe: this.state.Zielgruppe,
-                Kategorien: this.state.Kategorien,
-                Ort: this.state.Ort,
-                OrtName: this.state.OrtName
-            });
+                let currentDate = new Date(selectedDate.getTime());
+                let count = 0;
+                let eventDatesArray: Date[] = [];
+                eventDatesArray.push(new Date(currentDate.getTime()));
 
-            // Save to SharePoint list
-            await sp.web.lists.getByTitle("Events").items.add({
-                Title: this.state.title,
-                EventDate: eventDate,
-                EndDate: endDate,
-                EventData: otherData
-            });
-            this.props.componentDidMount();
-            this.props.handleButtonClick();
-        } catch (error) {
-            console.error("Error saving event:", error);
+                while (currentDate < seriesEndDate) {
+                    count++;
+                    if (selectedRecurrence === 'daily') {
+                        currentDate.setDate(currentDate.getDate() + 1);
+                    } else if (selectedRecurrence === 'weekly') {
+                        currentDate.setDate(currentDate.getDate() + 7);
+                    } else if (selectedRecurrence === 'monthly') {
+                        currentDate.setMonth(currentDate.getMonth() + 1);
+                    }
+                    eventDatesArray.push(new Date(currentDate.getTime()));
+                }
+                // Combine date and time for EventDate
+                let eventDate: Date = this.state.selectedDate;
+                eventDate.setHours(Number(this.state.hh1), Number(this.state.mm1), 0, 0);
+
+                // Combine date and time for EndDate
+                let endDate: Date = this.state.selectedDate2;
+                endDate.setHours(Number(this.state.hh2), Number(this.state.mm2), 0, 0);
+
+                // Prepare other data in JSON format
+                const otherData = JSON.stringify({
+                    Veranstalter: this.state.veranstalter,
+                    InternerVortragender: this.state.internerVortragende,
+                    InternerVortragendeMail: this.state.internerVortragendeMail,
+                    ExternerVortragender: this.state.externerVortragende,
+                    ExternerVortragendeMail: this.state.externerVortragendeMail,
+                    Zielgruppe: this.state.Zielgruppe,
+                    Kategorien: this.state.Kategorien,
+                    Ort: this.state.Ort,
+                    OrtName: this.state.OrtName
+                });
+
+                const uniqueId = `id_${Math.random().toString(36).substr(2, 9)}_${Date.now()}`;
+                const seriesEventData = JSON.stringify({
+                    isSeriesEvent: true,
+                    seriesID: uniqueId,
+                    selectedRecurrence: this.state.selectedRecurrence,
+                    seriesEndDate: this.state.seriesEndDate
+                })
+
+
+                // Save all series events to sharepoint list if there are no more than 50 events
+                if (eventDatesArray.length > 50) {
+                    alert("Serien-Events dürfen nicht mehr als 50 Events umfassen.");
+                    return 0;
+                }
+                for (let i = 0; i < eventDatesArray.length; i++) {
+                    // Combine date and time for EventDate
+                    eventDate = eventDatesArray[i];
+                    eventDate.setHours(Number(this.state.hh1), Number(this.state.mm1), 0, 0);
+
+                    // Combine date and time for EndDate
+                    endDate = eventDatesArray[i];
+                    endDate.setHours(Number(this.state.hh2), Number(this.state.mm2), 0, 0);
+                    await sp.web.lists.getByTitle("Events").items.add({
+                        Title: this.state.title,
+                        EventDate: eventDate,
+                        EndDate: endDate,
+                        EventData: otherData,
+                        Description: this.state.beschreibung,
+                        SeriesEventData: seriesEventData
+                    });
+                }
+                this.props.componentDidMount();
+                this.props.handleButtonClick();
+            } catch (error) {
+                console.error("Error saving event:", error);
+            }
+        } else {
+
+            try {
+                // Combine date and time for EventDate
+                const eventDate: Date = this.state.selectedDate;
+                eventDate.setHours(Number(this.state.hh1), Number(this.state.mm1), 0, 0);
+
+                // Combine date and time for EndDate
+                const endDate: Date = this.state.selectedDate2;
+                endDate.setHours(Number(this.state.hh2), Number(this.state.mm2), 0, 0);
+
+                // Prepare other data in JSON format
+                const otherData = JSON.stringify({
+                    Veranstalter: this.state.veranstalter,
+                    InternerVortragender: this.state.internerVortragende,
+                    InternerVortragendeMail: this.state.internerVortragendeMail,
+                    ExternerVortragender: this.state.externerVortragende,
+                    ExternerVortragendeMail: this.state.externerVortragendeMail,
+                    Zielgruppe: this.state.Zielgruppe,
+                    Kategorien: this.state.Kategorien,
+                    Ort: this.state.Ort,
+                    OrtName: this.state.OrtName
+                });
+
+                // Save to SharePoint list
+                await sp.web.lists.getByTitle("Events").items.add({
+                    Title: this.state.title,
+                    EventDate: eventDate,
+                    EndDate: endDate,
+                    EventData: otherData,
+                    Description: this.state.beschreibung
+                });
+                this.props.componentDidMount();
+                this.props.handleButtonClick();
+            } catch (error) {
+                console.error("Error saving event:", error);
+            }
         }
     }
 

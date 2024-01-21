@@ -1,8 +1,10 @@
 import * as React from 'react';
 import styles from '../KukEventsWebpart.module.scss';
 import { IAllEventsProps } from './allEventsProps';
-import { DatePicker } from 'office-ui-fabric-react';
+import { DatePicker, DayOfWeek, IDatePickerStrings, TextField, Dropdown, IDropdownOption, PrimaryButton }
+    from 'office-ui-fabric-react';
 import ViewEventForm from '../viewEventForm copy/viewEventForm';
+import { sp } from '@pnp/sp';
 
 export interface IEventsObject {
     title: string;
@@ -17,7 +19,7 @@ export interface IEventsObject {
     category: string;
     id: string;
     today: string;
-    eventData: { OrtName };
+    eventData: { OrtName, Veranstalter, Zielgruppe, Kategorien, Ort };
 }
 
 export interface IAllEventsState {
@@ -29,6 +31,11 @@ export interface IAllEventsState {
     selectedDate2String: string | null;
     showViewEventForm: boolean;
     formItemId: string;
+    ortOptions: IDropdownOption[];
+    veranstalter: string;
+    zielgruppe: string[];
+    Kategorien: string[];
+    Ort: string;
 }
 
 export default class AllEvents extends React.Component<IAllEventsProps, IAllEventsState> {
@@ -44,11 +51,16 @@ export default class AllEvents extends React.Component<IAllEventsProps, IAllEven
             selectedDateString: undefined,
             selectedDate2String: undefined,
             showViewEventForm: false,
-            formItemId: undefined
+            formItemId: undefined,
+            ortOptions: undefined,
+            veranstalter: undefined,
+            zielgruppe: [],
+            Kategorien: [],
+            Ort: undefined
         };
     }
 
-    public getEvents = async (from: any, until: any) => {
+    public getEvents = async (from: any, until: any, veranstalter: any, zielgruppe: any, katArray: any, location: any) => {
         try {
             const today: Date = new Date();
             today.setHours(0, 0, 0, 0); // Set to the start of today
@@ -71,8 +83,6 @@ export default class AllEvents extends React.Component<IAllEventsProps, IAllEven
                 EventDate ge datetime'${isoToday}'&$orderby=EventDate asc`;
             }
 
-            // let url: string = this.siteUrl + `/_api/web/lists/GetByTitle('Events')/
-            // items?$filter=EventDate ge datetime'${isoToday}'`;
             const response = await fetch(url, {
                 headers: {
                     'Accept': 'application/json;odata=verbose',
@@ -88,18 +98,38 @@ export default class AllEvents extends React.Component<IAllEventsProps, IAllEven
                 throw new Error('Invalid response data structure');
             }
 
-            const eventsItems: IEventsObject[] = data.d.results.map((item: any) => ({
+            let eventsItems: IEventsObject[] = data.d.results.map((item: any) => ({
                 title: item.Title,
                 startTime: item.EventDate,
                 endTime: item.EndDate,
                 location: item.Location,
                 category: item.Category,
                 id: item.Id,
-                eventData: JSON.parse(item.EventData) || { OrtName: null }
+                eventData: JSON.parse(item.EventData) || { OrtName: null, Veranstalter: null, Zielgruppe: null, Ort: null }
                 /* day: '13',
                  month: 'August'*/
 
             }));
+
+            // Filter based on 'veranstalter', 'zielgruppe', "kategorie" and "ort"
+            if (veranstalter) {
+                eventsItems = eventsItems.filter(item => item.eventData.Veranstalter && item.eventData.Veranstalter.includes(veranstalter));
+            }
+            if (zielgruppe) {
+                for (let i = 0; i < zielgruppe.length; i++) {
+                    eventsItems = eventsItems.filter(item => item.eventData.Zielgruppe && item.eventData.Zielgruppe.includes(zielgruppe[i]));
+                }
+            }
+            if (katArray) {
+                for (let i = 0; i < katArray.length; i++) {
+                    eventsItems = eventsItems.filter(item => item.eventData.Kategorien && item.eventData.Kategorien.includes(katArray[i]));
+                }
+            }
+            if (location) {
+                console.log("SecondOrtKey");
+                console.log(location);
+                eventsItems = eventsItems.filter(item => item.eventData.Ort && item.eventData.Ort.includes(location));
+            }
 
             eventsItems.forEach(item => {
                 const tempDay: Date = new Date();
@@ -208,7 +238,8 @@ export default class AllEvents extends React.Component<IAllEventsProps, IAllEven
     }
 
     public componentDidMount(): void {
-        this.getEvents(undefined, undefined);
+        this.getEvents(undefined, undefined, undefined, undefined, undefined, undefined);
+        this.getOrtOptions();
     }
 
     public handleClick(id: string): void {
@@ -224,7 +255,7 @@ export default class AllEvents extends React.Component<IAllEventsProps, IAllEven
     public handleDateChange = (date: Date | null | undefined): void => {
         const dateString: string = date.toISOString();
         if (date) { this.setState({ selectedDate: date, selectedDateString: dateString }); }
-        this.getEvents(dateString, this.state.selectedDate2String);
+        this.getEvents(dateString, this.state.selectedDate2String, this.state.veranstalter, this.state.zielgruppe, this.state.Kategorien, this.state.Ort);
     }
 
     public handleDateChange2 = (date: Date | null | undefined): void => {
@@ -233,7 +264,51 @@ export default class AllEvents extends React.Component<IAllEventsProps, IAllEven
         temp.setDate(temp.getDate() + 1);
         dateString = temp.toISOString();
         if (date) { this.setState({ selectedDate2: date, selectedDate2String: dateString }); }
-        this.getEvents(this.state.selectedDateString, dateString);
+        this.getEvents(this.state.selectedDateString, dateString, this.state.veranstalter, this.state.zielgruppe, this.state.Kategorien, this.state.Ort);
+    }
+    private handleZielgruppeChange = (item) => {
+        let zielArray: string[] = this.state.zielgruppe;
+
+        if (item.selected === true) {
+            console.log(item.key);
+            let tempItemKey = String(item.key);
+            console.log(tempItemKey);
+            zielArray.push(tempItemKey);
+        }
+        else {
+            let valueToRemove = String(item.key);
+            zielArray = zielArray.filter(item => item !== valueToRemove);
+        }
+        console.log("Zielgruppe");
+        console.log(zielArray);
+        this.setState({ zielgruppe: zielArray });
+        this.getEvents(this.state.selectedDateString, this.state.selectedDate2String, this.state.veranstalter, zielArray, this.state.Kategorien, this.state.Ort);
+    }
+
+    private handleVeranstalterChange = (event: string) => {
+        this.setState({ veranstalter: event || '' });
+        this.getEvents(this.state.selectedDateString, this.state.selectedDate2String, event, this.state.zielgruppe, this.state.Kategorien, this.state.Ort);
+    }
+
+    private handleKategorieChange = (item) => {
+        let katArray: string[] = this.state.Kategorien;
+
+        if (item.selected === true) {
+            katArray.push(String(item.key));
+        }
+        else {
+            let valueToRemove = String(item.key);
+            katArray = katArray.filter(item => item !== valueToRemove);
+        }
+        this.setState({ Kategorien: katArray });
+        this.getEvents(this.state.selectedDateString, this.state.selectedDate2String, this.state.veranstalter, this.state.zielgruppe, katArray, this.state.Ort);
+    }
+
+    private handleOrtChange = (item) => {
+        this.setState({ Ort: String(item.key) });
+        console.log("OrtKey");
+        console.log(String(item.key));
+        this.getEvents(this.state.selectedDateString, this.state.selectedDate2String, this.state.veranstalter, this.state.zielgruppe, this.state.Kategorien, String(item.key));
     }
 
     public createCalendarFile(item: any): void {
@@ -291,14 +366,66 @@ export default class AllEvents extends React.Component<IAllEventsProps, IAllEven
 
                         </div>
                         <div className={styles.dateCointainer}>
-                            <div className={styles.datePicker}>von: <DatePicker
+                            <div className={styles.certainWidth}>von: <DatePicker
                                 value={this.state.selectedDate}
                                 onSelectDate={this.handleDateChange}
                             /></div>
-                            <div className={styles.datePicker}>bis: <DatePicker
+                            <div className={styles.certainWidth}>bis: <DatePicker
                                 value={this.state.selectedDate2}
                                 onSelectDate={this.handleDateChange2}
                             /></div>
+                        </div>
+                        <div className={styles.dateCointainer}>
+                            <div className={styles.certainWidth}><Dropdown
+                                placeHolder='Select options'
+                                label='Zielgruppe'
+                                multiSelect
+                                options={[
+                                    { key: '1', text: 'Alle Ärztinnen und Ärzte' },
+                                    { key: '2', text: 'Basisärzte/Personen in Ausbildung zur Allgemeinmedizin' },
+                                    { key: '3', text: 'ÄrztInnen in Ausbildung zum Facharzt' },
+                                    { key: '4', text: 'Ausbildungskoordinatoren' },
+                                    { key: '5', text: 'Pflege' },
+                                    { key: '6', text: 'Verwaltung' }
+                                ]}
+                                onChanged={this.handleZielgruppeChange}
+                            /* onChanged={this.handleZielgruppeChange}
+                             {...(this.state.firstLoad ? { selectedKeys: this.state.Zielgruppe } : {})}
+                             disabled={!this.state.isEditMode}*/
+                            /></div>
+                            <div className={styles.certainWidth}><TextField
+                                label='Veranstalter'
+                                onChanged={this.handleVeranstalterChange}
+                                /*value={this.state.veranstalter} onChanged={this.handleVeranstalterChange}
+                            disabled={!this.state.isEditMode} *//>
+
+                            </div>
+                            <div className={styles.certainWidth}><Dropdown
+                                placeHolder='Select options'
+                                label='Kategorien'
+                                multiSelect
+                                options={[
+                                    { key: '1', text: 'Fortbildung' },
+                                    { key: '2', text: 'Social Events / Team Building' },
+                                    { key: '3', text: 'Veranstaltung' }
+                                ]}
+                                onChanged={this.handleKategorieChange}
+                            /* onChanged={this.handleKategorieChange}
+                             {...(this.state.firstLoad ? { selectedKeys: this.state.Kategorien } : {})}
+                             disabled={!this.state.isEditMode}*/
+                            />
+                            </div>
+                            <div className={styles.certainWidth}>
+                                <Dropdown label='Ort'
+                                    options={this.state.ortOptions}
+                                    onChanged={this.handleOrtChange}
+                                /*  onChanged={this.handleOrtChange}
+                                  disabled={!this.state.isEditMode}
+                                  options={this.state.ortOptions}
+                                  {...(this.state.firstLoad ? { selectedKey: Number(this.state.Ort) } : {})}*/
+                                />
+                            </div>
+
                         </div>
                         <div className={styles.placeholder2}>
                             {this.state.eventsData.map((eventsItem, index) => (
@@ -334,8 +461,8 @@ export default class AllEvents extends React.Component<IAllEventsProps, IAllEven
                                         <div className={styles.fromUntil}>{eventsItem.fromUntil}</div>
                                     </div>
                                     <div className={styles.width100}>
-                                        {eventsItem.eventData.OrtName && (<img alt='altname' className={styles.icon} src={locationIcon}></img>)}
-                                        {eventsItem.eventData.OrtName && (<div className={styles.location}>{eventsItem.eventData.OrtName}</div>)}
+                                        {eventsItem.eventData.OrtName && eventsItem.eventData.OrtName != "undefined" && (<img alt='altname' className={styles.icon} src={locationIcon}></img>)}
+                                        {eventsItem.eventData.OrtName && eventsItem.eventData.OrtName != "undefined" && (<div className={styles.location}>{eventsItem.eventData.OrtName}</div>)}
                                     </div>
                                     <div className={styles.width100}>
                                         <div role='none' className={styles.addToCalendar} onClick={(event) => {
@@ -349,13 +476,24 @@ export default class AllEvents extends React.Component<IAllEventsProps, IAllEven
                         </div>
                     </div>
                 </div>
-                {this.state.showViewEventForm && (
-                    <div>
-                        <ViewEventForm componentDidMount={() => this.componentDidMount()} description={this.props.description} context={this.props.context}
-                            handleButtonClick={() => this.handleClick4(undefined)} formItemId={this.state.formItemId}></ViewEventForm>
-                    </div>
-                )}
-            </div>
+                {
+                    this.state.showViewEventForm && (
+                        <div>
+                            <ViewEventForm componentDidMount={() => this.componentDidMount()} description={this.props.description} context={this.props.context}
+                                handleButtonClick={() => this.handleClick4(undefined)} formItemId={this.state.formItemId}></ViewEventForm>
+                        </div>
+                    )
+                }
+            </div >
         );
+    }
+    private getOrtOptions = async () => {
+        try {
+            const items = await sp.web.lists.getByTitle("Orte").items.select("Title").get();
+            const ortOptions = items.map((item, index) => ({ key: index + 1, text: item.Title }));
+            this.setState({ ortOptions });
+        } catch (error) {
+            console.error("Error fetching 'Orte' list items:", error);
+        }
     }
 }
