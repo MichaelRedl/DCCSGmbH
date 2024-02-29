@@ -20,7 +20,7 @@ export interface IEventsObject {
   category: string;
   id: string;
   today: string;
-  eventData: { OrtName };
+  eventData: { OrtName:string };
 }
 
 export interface IEventsWebpartState {
@@ -82,7 +82,7 @@ export default class KukEventsWebpart extends React.Component<IKukEventsWebpartP
           location: item.Location,
           category: item.Category,
           id: item.Id,
-          eventData: JSON.parse(item.EventData) || { OrtName: null }
+          eventData: JSON.parse(item.EventData) || { OrtName: undefined }
           /* day: '13',
            month: 'August'*/
 
@@ -312,8 +312,10 @@ export default class KukEventsWebpart extends React.Component<IKukEventsWebpartP
                 <div className={styles.fromUntil}>{eventsItem.fromUntil}</div>
               </div>
               <div className={styles.locationContainer}>
-                {eventsItem.eventData.OrtName && eventsItem.eventData.OrtName != "undefined" && (<img alt='altname' className={styles.icon} src={locationIcon}></img>)}
-                {eventsItem.eventData.OrtName && eventsItem.eventData.OrtName != "undefined" && (<div className={styles.location}>{eventsItem.eventData.OrtName}</div>)}
+                {eventsItem.eventData.OrtName && eventsItem.eventData.OrtName !== 'undefined' &&
+                 (<img alt='altname' className={styles.icon} src={locationIcon}></img>)}
+                {eventsItem.eventData.OrtName && eventsItem.eventData.OrtName !== 'undefined' &&
+                 (<div className={styles.location}>{eventsItem.eventData.OrtName}</div>)}
               </div>
 
               <div className={styles.width100}>
@@ -334,13 +336,15 @@ export default class KukEventsWebpart extends React.Component<IKukEventsWebpartP
         )}
         {this.state.showNewEventForm && (
           <div>
-            <NewEventForm componentDidMount={() => this.componentDidMount()} description={this.props.description} context={this.props.context}
+            <NewEventForm componentDidMount={() => this.componentDidMount()}
+             description={this.props.description} context={this.props.context}
               handleButtonClick={() => this.handleClick3()}></NewEventForm>
           </div>
         )}
         {this.state.showViewEventForm && (
           <div>
-            <ViewEventForm componentDidMount={() => this.componentDidMount()} description={this.props.description} context={this.props.context}
+            <ViewEventForm componentDidMount={() => this.componentDidMount()}
+             description={this.props.description} context={this.props.context}
               handleButtonClick={() => this.handleClick4(undefined)} formItemId={this.state.formItemId}></ViewEventForm>
           </div>
         )}
@@ -351,43 +355,39 @@ export default class KukEventsWebpart extends React.Component<IKukEventsWebpartP
   private ensureOrteListExists = async () => {
     try {
       // Check if the list exists
-      await sp.web.lists.getByTitle("Orte").get();
+      await sp.web.lists.getByTitle('Orte').get();
     } catch (error) {
       // If the list does not exist, create it
-      if (error instanceof Error && error.message.indexOf("404") !== -1) {
+      if (error instanceof Error && error.message.indexOf('404') !== -1) {
         try {
-          await sp.web.lists.add("Orte", "A list for Orte", 100, false);
+          await sp.web.lists.add('Orte', 'A list for Orte', 100, false);
         } catch (creationError) {
-          console.error("Error creating the list 'Orte':", creationError);
+          console.error('Error creating the list Orte:', creationError);
         }
       } else {
-        console.error("Error checking for the list 'Orte':", error);
+        console.error('Error checking for the list Orte:', error);
       }
     }
   }
 
-
   private ensureEventDataColumnExists = async () => {
     try {
       // Attempt to get the 'EventData' field from the 'Events' list
-      await sp.web.lists.getByTitle("Events").fields.getByTitle("EventData").get();
+      await sp.web.lists.getByTitle('Events').fields.getByTitle('EventData').get();
     } catch (error) {
       // Check if the error is because the field does not exist
 
-      await sp.web.lists.getByTitle("Events").fields.addMultilineText("EventData", 6, false, false, false, false);
+      await sp.web.lists.getByTitle('Events').fields.addMultilineText('EventData', 6, false, false, false, false);
 
     }
     try {
       // Attempt to get the 'EventData' field from the 'Events' list
-      await sp.web.lists.getByTitle("Events").fields.getByTitle("SeriesEventData").get();
+      await sp.web.lists.getByTitle('Events').fields.getByTitle('SeriesEventData').get();
     } catch (error) {
       // Check if the error is because the field does not exist
 
-      await sp.web.lists.getByTitle("Events").fields.addText("SeriesEventData");
+      await sp.web.lists.getByTitle('Events').fields.addText('SeriesEventData');
 
     }
   }
-  
-
-
 }

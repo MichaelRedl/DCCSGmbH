@@ -1,10 +1,11 @@
 import * as React from 'react';
 import styles from '../KukEventsWebpart.module.scss';
 import { IAllEventsProps } from './allEventsProps';
-import { DatePicker, DayOfWeek, IDatePickerStrings, TextField, Dropdown, IDropdownOption, PrimaryButton }
+import { DatePicker, TextField, Dropdown, IDropdownOption }
     from 'office-ui-fabric-react';
 import ViewEventForm from '../viewEventForm copy/viewEventForm';
 import { sp } from '@pnp/sp';
+import { PeoplePicker, PrincipalType } from '@pnp/spfx-controls-react/lib/PeoplePicker';
 
 export interface IEventsObject {
     title: string;
@@ -19,16 +20,16 @@ export interface IEventsObject {
     category: string;
     id: string;
     today: string;
-    eventData: { OrtName, Veranstalter, Zielgruppe, Kategorien, Ort };
+    eventData: { OrtName, Veranstalter, Zielgruppe, Kategorien, Ort, InternerVortragendeMail, ExternerVortragendeMail };
 }
 
 export interface IAllEventsState {
     eventsData: IEventsObject[];
-    hoveredEventIndex: number | null;
-    selectedDate: Date | null;
-    selectedDate2: Date | null;
-    selectedDateString: string | null;
-    selectedDate2String: string | null;
+    hoveredEventIndex: number | undefined;
+    selectedDate: Date | undefined;
+    selectedDate2: Date | undefined;
+    selectedDateString: string | undefined;
+    selectedDate2String: string | undefined;
     showViewEventForm: boolean;
     formItemId: string;
     ortOptions: IDropdownOption[];
@@ -36,6 +37,8 @@ export interface IAllEventsState {
     zielgruppe: string[];
     Kategorien: string[];
     Ort: string;
+    internalPresentersEmails: string[];
+    externalPresentersEmails: string[];
 }
 
 export default class AllEvents extends React.Component<IAllEventsProps, IAllEventsState> {
@@ -56,11 +59,14 @@ export default class AllEvents extends React.Component<IAllEventsProps, IAllEven
             veranstalter: undefined,
             zielgruppe: [],
             Kategorien: [],
-            Ort: undefined
+            Ort: undefined,
+            internalPresentersEmails: [],
+            externalPresentersEmails: [],
         };
     }
 
-    public getEvents = async (from: any, until: any, veranstalter: any, zielgruppe: any, katArray: any, location: any) => {
+    public getEvents = async (from: any, until: any, veranstalter: any, zielgruppe: any,
+         katArray: any, location: any, internalPresentersEmails: any, externalPresentersEmails: any) => {
         try {
             const today: Date = new Date();
             today.setHours(0, 0, 0, 0); // Set to the start of today
@@ -105,32 +111,62 @@ export default class AllEvents extends React.Component<IAllEventsProps, IAllEven
                 location: item.Location,
                 category: item.Category,
                 id: item.Id,
-                eventData: JSON.parse(item.EventData) || { OrtName: null, Veranstalter: null, Zielgruppe: null, Ort: null }
+                eventData: JSON.parse(item.EventData) || { OrtName: undefined, Veranstalter: undefined,
+                     Zielgruppe: undefined, Ort: undefined, InternerVortragendeMail: undefined, ExternerVortragendeMail: undefined }
                 /* day: '13',
                  month: 'August'*/
 
             }));
 
-            // Filter based on 'veranstalter', 'zielgruppe', "kategorie" and "ort"
+            // Filter based on 'veranstalter', 'zielgruppe', 'kategorie' and 'ort'
             if (veranstalter) {
-                eventsItems = eventsItems.filter(item => item.eventData.Veranstalter && item.eventData.Veranstalter.includes(veranstalter));
+                eventsItems = eventsItems.filter(item => item.eventData.Veranstalter &&
+                     item.eventData.Veranstalter.includes(veranstalter));
             }
-            if (zielgruppe) {
+            if (zielgruppe && !zielgruppe.includes('7')) {
                 for (let i = 0; i < zielgruppe.length; i++) {
-                    eventsItems = eventsItems.filter(item => item.eventData.Zielgruppe && item.eventData.Zielgruppe.includes(zielgruppe[i]));
+                    eventsItems = eventsItems.filter(item => item.eventData.Zielgruppe &&
+                         item.eventData.Zielgruppe.includes(zielgruppe[i]));
                 }
             }
-            if (katArray) {
+            if (katArray && !katArray.includes('4')) {
                 for (let i = 0; i < katArray.length; i++) {
-                    eventsItems = eventsItems.filter(item => item.eventData.Kategorien && item.eventData.Kategorien.includes(katArray[i]));
+                    eventsItems = eventsItems.filter(item => item.eventData.Kategorien &&
+                         item.eventData.Kategorien.includes(katArray[i]));
                 }
             }
-            if (location) {
-                console.log("SecondOrtKey");
-                console.log(location);
-                eventsItems = eventsItems.filter(item => item.eventData.Ort && item.eventData.Ort.includes(location));
+            if (location && Number(location) !== this.state.ortOptions.length) {
+                eventsItems = eventsItems.filter(item => item.eventData.Ort &&
+                     item.eventData.Ort.includes(location));
             }
 
+            if (this.state.internalPresentersEmails.length > 0) {
+                eventsItems = eventsItems.filter(item => {
+                    let matchFound = false;
+                    for (let email of this.state.internalPresentersEmails) {
+                        if (item.eventData.InternerVortragendeMail &&
+                             item.eventData.InternerVortragendeMail.includes(email)) {
+                            matchFound = true;
+                            break; // Stop searching if a match is found
+                        }
+                    }
+                    return matchFound;
+                });
+            }
+
+            if (this.state.externalPresentersEmails.length > 0) {
+                eventsItems = eventsItems.filter(item => {
+                    let matchFound = false;
+                    for (let email of this.state.externalPresentersEmails) {
+                        if (item.eventData.ExternerVortragendeMail &&
+                             item.eventData.ExternerVortragendeMail.includes(email)) {
+                            matchFound = true;
+                            break; // Stop searching if a match is found
+                        }
+                    }
+                    return matchFound;
+                });
+            }
             eventsItems.forEach(item => {
                 const tempDay: Date = new Date();
                 const dayTodayString: string = tempDay.getUTCDate().toString();
@@ -238,7 +274,7 @@ export default class AllEvents extends React.Component<IAllEventsProps, IAllEven
     }
 
     public componentDidMount(): void {
-        this.getEvents(undefined, undefined, undefined, undefined, undefined, undefined);
+        this.getEvents(undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined);
         this.getOrtOptions();
     }
 
@@ -252,63 +288,23 @@ export default class AllEvents extends React.Component<IAllEventsProps, IAllEven
         this.setState({ formItemId: id });
     }
 
-    public handleDateChange = (date: Date | null | undefined): void => {
+    public handleDateChange = (date: Date | undefined | undefined): void => {
         const dateString: string = date.toISOString();
         if (date) { this.setState({ selectedDate: date, selectedDateString: dateString }); }
-        this.getEvents(dateString, this.state.selectedDate2String, this.state.veranstalter, this.state.zielgruppe, this.state.Kategorien, this.state.Ort);
+        this.getEvents(dateString, this.state.selectedDate2String,
+         this.state.veranstalter, this.state.zielgruppe, this.state.Kategorien,
+          this.state.Ort, this.state.internalPresentersEmails, this.state.externalPresentersEmails);
     }
 
-    public handleDateChange2 = (date: Date | null | undefined): void => {
+    public handleDateChange2 = (date: Date | undefined | undefined): void => {
         let dateString: string = date.toISOString();
         const temp: Date = new Date(dateString);
         temp.setDate(temp.getDate() + 1);
         dateString = temp.toISOString();
         if (date) { this.setState({ selectedDate2: date, selectedDate2String: dateString }); }
-        this.getEvents(this.state.selectedDateString, dateString, this.state.veranstalter, this.state.zielgruppe, this.state.Kategorien, this.state.Ort);
-    }
-    private handleZielgruppeChange = (item) => {
-        let zielArray: string[] = this.state.zielgruppe;
-
-        if (item.selected === true) {
-            console.log(item.key);
-            let tempItemKey = String(item.key);
-            console.log(tempItemKey);
-            zielArray.push(tempItemKey);
-        }
-        else {
-            let valueToRemove = String(item.key);
-            zielArray = zielArray.filter(item => item !== valueToRemove);
-        }
-        console.log("Zielgruppe");
-        console.log(zielArray);
-        this.setState({ zielgruppe: zielArray });
-        this.getEvents(this.state.selectedDateString, this.state.selectedDate2String, this.state.veranstalter, zielArray, this.state.Kategorien, this.state.Ort);
-    }
-
-    private handleVeranstalterChange = (event: string) => {
-        this.setState({ veranstalter: event || '' });
-        this.getEvents(this.state.selectedDateString, this.state.selectedDate2String, event, this.state.zielgruppe, this.state.Kategorien, this.state.Ort);
-    }
-
-    private handleKategorieChange = (item) => {
-        let katArray: string[] = this.state.Kategorien;
-
-        if (item.selected === true) {
-            katArray.push(String(item.key));
-        }
-        else {
-            let valueToRemove = String(item.key);
-            katArray = katArray.filter(item => item !== valueToRemove);
-        }
-        this.setState({ Kategorien: katArray });
-        this.getEvents(this.state.selectedDateString, this.state.selectedDate2String, this.state.veranstalter, this.state.zielgruppe, katArray, this.state.Ort);
-    }
-
-    private handleOrtChange = (item) => {
-        this.setState({ Ort: String(item.key) });
-        console.log("OrtKey");
-        console.log(String(item.key));
-        this.getEvents(this.state.selectedDateString, this.state.selectedDate2String, this.state.veranstalter, this.state.zielgruppe, this.state.Kategorien, String(item.key));
+        this.getEvents(this.state.selectedDateString, dateString, this.state.veranstalter,
+             this.state.zielgruppe, this.state.Kategorien, this.state.Ort,
+              this.state.internalPresentersEmails, this.state.externalPresentersEmails);
     }
 
     public createCalendarFile(item: any): void {
@@ -374,6 +370,7 @@ export default class AllEvents extends React.Component<IAllEventsProps, IAllEven
                                 value={this.state.selectedDate2}
                                 onSelectDate={this.handleDateChange2}
                             /></div>
+
                         </div>
                         <div className={styles.dateCointainer}>
                             <div className={styles.certainWidth}><Dropdown
@@ -381,12 +378,14 @@ export default class AllEvents extends React.Component<IAllEventsProps, IAllEven
                                 label='Zielgruppe'
                                 multiSelect
                                 options={[
+                                    { key: '7', text: 'Alle' },
                                     { key: '1', text: 'Alle Ärztinnen und Ärzte' },
                                     { key: '2', text: 'Basisärzte/Personen in Ausbildung zur Allgemeinmedizin' },
                                     { key: '3', text: 'ÄrztInnen in Ausbildung zum Facharzt' },
                                     { key: '4', text: 'Ausbildungskoordinatoren' },
                                     { key: '5', text: 'Pflege' },
                                     { key: '6', text: 'Verwaltung' }
+
                                 ]}
                                 onChanged={this.handleZielgruppeChange}
                             /* onChanged={this.handleZielgruppeChange}
@@ -405,6 +404,7 @@ export default class AllEvents extends React.Component<IAllEventsProps, IAllEven
                                 label='Kategorien'
                                 multiSelect
                                 options={[
+                                    { key: '4', text: 'Alle' },
                                     { key: '1', text: 'Fortbildung' },
                                     { key: '2', text: 'Social Events / Team Building' },
                                     { key: '3', text: 'Veranstaltung' }
@@ -423,6 +423,32 @@ export default class AllEvents extends React.Component<IAllEventsProps, IAllEven
                                   disabled={!this.state.isEditMode}
                                   options={this.state.ortOptions}
                                   {...(this.state.firstLoad ? { selectedKey: Number(this.state.Ort) } : {})}*/
+                                />
+                            </div>
+                        </div>
+                        <div className={styles.dateCointainer}>
+                            <div className={styles.certainWidth2}>
+                                <PeoplePicker
+                                    context={this.props.context}
+                                    titleText='Interne/r Vortragende/r'
+                                    personSelectionLimit={10}
+                                    groupName={''} // Use this prop to filter by SharePoint group
+                                    showtooltip={true}
+                                    showHiddenInUI={false}
+                                    principleTypes={[PrincipalType.User]}
+                                    selectedItems={this.handleInternalPresenterChange}
+                                />
+                            </div>
+                            <div className={styles.certainWidth2}>
+                                <PeoplePicker
+                                    context={this.props.context}
+                                    titleText='Extern/e Vortragend/e'
+                                    personSelectionLimit={10}
+                                    groupName={''} // Use this prop to filter by SharePoint group
+                                    showtooltip={true}
+                                    showHiddenInUI={false}
+                                    principleTypes={[PrincipalType.User]}
+                                    selectedItems={this.handleExternalPresenterChange}
                                 />
                             </div>
 
@@ -461,8 +487,10 @@ export default class AllEvents extends React.Component<IAllEventsProps, IAllEven
                                         <div className={styles.fromUntil}>{eventsItem.fromUntil}</div>
                                     </div>
                                     <div className={styles.width100}>
-                                        {eventsItem.eventData.OrtName && eventsItem.eventData.OrtName != "undefined" && (<img alt='altname' className={styles.icon} src={locationIcon}></img>)}
-                                        {eventsItem.eventData.OrtName && eventsItem.eventData.OrtName != "undefined" && (<div className={styles.location}>{eventsItem.eventData.OrtName}</div>)}
+                                        {eventsItem.eventData.OrtName && eventsItem.eventData.OrtName !== 'undefined' &&
+                                         (<img alt='altname' className={styles.icon} src={locationIcon}></img>)}
+                                        {eventsItem.eventData.OrtName && eventsItem.eventData.OrtName !== 'undefined' &&
+                                         (<div className={styles.location}>{eventsItem.eventData.OrtName}</div>)}
                                     </div>
                                     <div className={styles.width100}>
                                         <div role='none' className={styles.addToCalendar} onClick={(event) => {
@@ -479,8 +507,10 @@ export default class AllEvents extends React.Component<IAllEventsProps, IAllEven
                 {
                     this.state.showViewEventForm && (
                         <div>
-                            <ViewEventForm componentDidMount={() => this.componentDidMount()} description={this.props.description} context={this.props.context}
-                                handleButtonClick={() => this.handleClick4(undefined)} formItemId={this.state.formItemId}></ViewEventForm>
+                            <ViewEventForm componentDidMount={() => this.componentDidMount()}
+                             description={this.props.description} context={this.props.context}
+                                handleButtonClick={() => this.handleClick4(undefined)}
+                                 formItemId={this.state.formItemId}></ViewEventForm>
                         </div>
                     )
                 }
@@ -489,11 +519,77 @@ export default class AllEvents extends React.Component<IAllEventsProps, IAllEven
     }
     private getOrtOptions = async () => {
         try {
-            const items = await sp.web.lists.getByTitle("Orte").items.select("Title").get();
-            const ortOptions = items.map((item, index) => ({ key: index + 1, text: item.Title }));
+            const items = await sp.web.lists.getByTitle('Orte').items.select('Title').get();
+            let ortOptions = items.map((item, index) => ({ key: index + 1, text: item.Title }));
+            let allKey = ortOptions.length + 1;
+            ortOptions.unshift({key: allKey, text: 'Alle'});
             this.setState({ ortOptions });
+
         } catch (error) {
-            console.error("Error fetching 'Orte' list items:", error);
+            console.error('Error fetching Orte list items:', error);
         }
     }
+
+    private handleZielgruppeChange = (item) => {
+        let zielArray: string[] = this.state.zielgruppe;
+
+        if (item.selected === true) {
+            let tempItemKey = String(item.key);
+            zielArray.push(tempItemKey);
+        } else {
+            let valueToRemove = String(item.key);
+            zielArray = zielArray.filter(item => item !== valueToRemove);
+        }
+        this.setState({ zielgruppe: zielArray });
+        this.getEvents(this.state.selectedDateString, this.state.selectedDate2String,
+             this.state.veranstalter, zielArray, this.state.Kategorien, this.state.Ort,
+              this.state.internalPresentersEmails, this.state.externalPresentersEmails);
+    }
+
+    private handleVeranstalterChange = (event: string) => {
+        this.setState({ veranstalter: event || '' });
+        this.getEvents(this.state.selectedDateString, this.state.selectedDate2String,
+             event, this.state.zielgruppe, this.state.Kategorien, this.state.Ort,
+              this.state.internalPresentersEmails, this.state.externalPresentersEmails);
+    }
+
+    private handleKategorieChange = (item) => {
+        let katArray: string[] = this.state.Kategorien;
+
+        if (item.selected === true) {
+            katArray.push(String(item.key));
+        } else {
+            let valueToRemove = String(item.key);
+            katArray = katArray.filter(item => item !== valueToRemove);
+        }
+        this.setState({ Kategorien: katArray });
+        this.getEvents(this.state.selectedDateString, this.state.selectedDate2String,
+             this.state.veranstalter, this.state.zielgruppe, katArray, this.state.Ort,
+              this.state.internalPresentersEmails, this.state.externalPresentersEmails);
+    }
+
+    private handleOrtChange = (item) => {
+        this.setState({ Ort: String(item.key) });
+        this.getEvents(this.state.selectedDateString, this.state.selectedDate2String,
+             this.state.veranstalter, this.state.zielgruppe, this.state.Kategorien, String(item.key),
+              this.state.internalPresentersEmails, this.state.externalPresentersEmails);
+    }
+
+    private handleInternalPresenterChange = (items: any[]) => {
+        const internalPresentersEmails = items.map(item => item.secondaryText);
+        this.setState({ internalPresentersEmails }, () => {
+            this.getEvents(this.state.selectedDateString, this.state.selectedDate2String,
+                 this.state.veranstalter, this.state.zielgruppe, this.state.Kategorien,
+                  this.state.Ort, internalPresentersEmails, this.state.externalPresentersEmails);
+        });
+    };
+
+    private handleExternalPresenterChange = (items: any[]) => {
+        const externalPresentersEmails = items.map(item => item.secondaryText);
+        this.setState({ externalPresentersEmails }, () => {
+            this.getEvents(this.state.selectedDateString, this.state.selectedDate2String,
+                 this.state.veranstalter, this.state.zielgruppe, this.state.Kategorien,
+                  this.state.Ort, this.state.internalPresentersEmails, externalPresentersEmails);
+        });
+    };
 }

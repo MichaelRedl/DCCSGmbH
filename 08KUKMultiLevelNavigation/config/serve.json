@@ -4,7 +4,7 @@
   "https": true,
   "serveConfigurations": {
     "default": {
-      "pageUrl": "https://dev19.dccs-demo.at/projects/KUKComm",
+      "pageUrl": "https://dev19.dccs-demo.at/projects/KUKComm/_layouts/15/viewlsts.aspx?view=14",
       "customActions": {
         "dcecca58-0575-4f44-a487-f56120ba8990": {
           "location": "ClientSideExtension.ApplicationCustomizer",
@@ -15,7 +15,7 @@
       }
     },
     "multilevelNavigation": {
-      "pageUrl": "https://dev19.dccs-demo.at/projects/KUKComm",
+      "pageUrl": "https://dev19.dccs-demo.at/projects/KUKComm/_layouts/15/viewlsts.aspx?view=14",
       "customActions": {
         "dcecca58-0575-4f44-a487-f56120ba8990": {
           "location": "ClientSideExtension.ApplicationCustomizer",

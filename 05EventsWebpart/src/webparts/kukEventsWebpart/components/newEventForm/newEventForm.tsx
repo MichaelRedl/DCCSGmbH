@@ -295,6 +295,7 @@ export default class NewEventForm extends React.Component<InewEventsProps, InewE
                                 { key: '6', text: 'Verwaltung' }
                             ]}
                             onChanged={this.handleZielgruppeChange}
+                            required={true}
                         />
                         <Dropdown
                             placeHolder='Select options'
@@ -306,6 +307,7 @@ export default class NewEventForm extends React.Component<InewEventsProps, InewE
                                 { key: '3', text: 'Veranstaltung' }
                             ]}
                             onChanged={this.handleKategorieChange}
+                            required={true}
                         />
                         <Dropdown label='Ort'
                             onChanged={this.handleOrtChange}
@@ -480,7 +482,7 @@ export default class NewEventForm extends React.Component<InewEventsProps, InewE
             if (this.state.title === undefined || this.state.selectedDate === undefined || this.state.selectedDate2 === undefined
                 || this.state.title === "" || this.state.hh1 === undefined || this.state.hh2 === undefined
                 || this.state.mm1 === undefined || this.state.seriesEndDate === undefined
-                || this.state.mm2 === undefined) {
+                || this.state.mm2 === undefined || this.state.Kategorien.length === 0 || this.state.Zielgruppe.length === 0) {
                 alert("Bitte füllen Sie alle Pflichtfelder aus.");
                 return false;
             }
@@ -512,7 +514,7 @@ export default class NewEventForm extends React.Component<InewEventsProps, InewE
         } else {
             if (this.state.title === undefined || this.state.selectedDate === undefined || this.state.selectedDate2 === undefined
                 || this.state.title === "" || this.state.hh1 === undefined || this.state.hh2 === undefined
-                || this.state.mm1 === undefined || this.state.mm2 === undefined) {
+                || this.state.mm1 === undefined || this.state.mm2 === undefined || this.state.Kategorien.length === 0 || this.state.Zielgruppe.length === 0) {
                 alert("Bitte füllen Sie alle Pflichtfelder aus.");
                 return false;
             }

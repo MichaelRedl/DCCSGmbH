@@ -66,36 +66,36 @@ export default class ViewEventForm extends React.Component<IviewEventsProps, Ivi
         super(props);
 
         this.state = {
-            title: undefined,
-            selectedDate: undefined,
-            selectedDate2: undefined,
-            hh1: undefined,
-            mm1: undefined,
-            hh2: undefined,
-            mm2: undefined,
-            beschreibung: undefined,
-            veranstalter: undefined,
-            internerVortragende: undefined,
-            internerVortragendeMail: undefined,
-            externerVortragende: undefined,
-            externerVortragendeMail: undefined,
+            title: null,
+            selectedDate: null,
+            selectedDate2: null,
+            hh1: null,
+            mm1: null,
+            hh2: null,
+            mm2: null,
+            beschreibung: null,
+            veranstalter: null,
+            internerVortragende: null,
+            internerVortragendeMail: null,
+            externerVortragende: null,
+            externerVortragendeMail: null,
             Zielgruppe: [],
             Kategorien: [],
-            Ort: undefined,
-            OrtName: undefined,
+            Ort: null,
+            OrtName: null,
             dateErrorShowing: false,
             isEditMode: false,
             ortOptions: [],
             firstLoad: true,
-            selectedRecurrence: undefined,
-            isSeriesEvent: undefined,
-            seriesEndDate: undefined,
+            selectedRecurrence: null,
+            isSeriesEvent: null,
+            seriesEndDate: null,
             recurrenceOptions: [
                 { key: 'daily', text: 'Täglich' },
                 { key: 'weekly', text: 'Wöchentlich' },
                 { key: 'monthly', text: 'Monatlich' },
             ],
-            seriesID: undefined,
+            seriesID: null,
             buttonsVisible: true
         };
     }
@@ -314,6 +314,7 @@ export default class ViewEventForm extends React.Component<IviewEventsProps, Ivi
                             onChanged={this.handleZielgruppeChange}
                             {...(this.state.firstLoad ? { selectedKeys: this.state.Zielgruppe } : {})}
                             disabled={!this.state.isEditMode}
+                            required={true}
                         />
                         <Dropdown
                             placeHolder='Select options'
@@ -327,6 +328,7 @@ export default class ViewEventForm extends React.Component<IviewEventsProps, Ivi
                             onChanged={this.handleKategorieChange}
                             {...(this.state.firstLoad ? { selectedKeys: this.state.Kategorien } : {})}
                             disabled={!this.state.isEditMode}
+                            required={true}
                         />
                         <Dropdown label='Ort'
                             onChanged={this.handleOrtChange}
@@ -449,7 +451,7 @@ export default class ViewEventForm extends React.Component<IviewEventsProps, Ivi
         this.setState({ veranstalter: event || '' });
     }
 
-    private handleDateChange = (date: Date | null | undefined, dateType: 'selectedDate' | 'selectedDate2') => {
+    private handleDateChange = (date: Date | null | null, dateType: 'selectedDate' | 'selectedDate2') => {
         if (date) {
             this.setState({ [dateType]: date } as Pick<IviewEventFormState, typeof dateType>);
         }
@@ -524,10 +526,10 @@ export default class ViewEventForm extends React.Component<IviewEventsProps, Ivi
     };
 
     private validateForm = () => {
-        if (this.state.title === undefined || this.state.selectedDate === undefined || this.state.selectedDate2 === undefined
-            || this.state.title === "" || this.state.hh1 === undefined || this.state.hh2 === undefined
-            || this.state.mm1 === undefined || this.state.mm2 === undefined) {
-            alert("Please fill in all required fields.");
+        if (this.state.title === null || this.state.selectedDate === null || this.state.selectedDate2 === null
+            || this.state.title === "" || this.state.hh1 === null || this.state.hh2 === null
+            || this.state.mm1 === null || this.state.mm2 === null || this.state.Kategorien.length === 0 || this.state.Zielgruppe.length === 0) {
+            alert("Bitte füllen Sie alle Pflichtfelder aus.");
             return false;
         }
         if (this.state.selectedDate2.getDate() < this.state.selectedDate.getDate()) {
@@ -657,18 +659,34 @@ export default class ViewEventForm extends React.Component<IviewEventsProps, Ivi
                 hh2,
                 mm2,
             });
-            this.setState({ veranstalter: otherData.Veranstalter });
+            this.setState({
+                veranstalter: otherData && 'Veranstalter' in otherData ? otherData.Veranstalter : null,
+                internerVortragendeMail: otherData && 'InternerVortragendeMail' in otherData ? otherData.InternerVortragendeMail : null,
+                externerVortragendeMail: otherData && 'ExternerVortragendeMail' in otherData ? otherData.ExternerVortragendeMail : null,
+                Zielgruppe: otherData && 'Zielgruppe' in otherData ? otherData.Zielgruppe : null,
+                Kategorien: otherData && 'Kategorien' in otherData ? otherData.Kategorien : null,
+                Ort: otherData && 'Ort' in otherData ? String(otherData.Ort) : null,
+                OrtName: otherData && 'OrtName' in otherData ? String(otherData.OrtName) : null,
+                beschreibung: item && 'Description' in item ? item.Description : null,
+            });
+            
+           /* this.setState({ veranstalter: otherData.Veranstalter });
             this.setState({ internerVortragendeMail: otherData.InternerVortragendeMail });
             this.setState({ externerVortragendeMail: otherData.ExternerVortragendeMail });
             this.setState({ Zielgruppe: otherData.Zielgruppe });
             this.setState({ Kategorien: otherData.Kategorien });
             this.setState({ Ort: String(otherData.Ort) });
             this.setState({ OrtName: String(otherData.OrtName) });
-            this.setState({ beschreibung: item.Description });
-            this.setState({ selectedRecurrence: seriesEventData.selectedRecurrence || undefined });
-            this.setState({ seriesEndDate: new Date(seriesEventData.seriesEndDate) || undefined });
-            this.setState({ isSeriesEvent: seriesEventData.isSeriesEvent || undefined });
-            this.setState({ seriesID: seriesEventData.seriesID || undefined });
+            this.setState({ beschreibung: item.Description });*/
+            this.setState({ selectedRecurrence: seriesEventData && 'selectedRecurrence' in seriesEventData ? seriesEventData.selectedRecurrence : null });
+            /*his.setState({ seriesEndDate: new Date(seriesEventData.seriesEndDate) || null });
+            this.setState({ isSeriesEvent: seriesEventData.isSeriesEvent || null });
+            this.setState({ seriesID: seriesEventData.seriesID || null });*/
+            this.setState({
+                seriesEndDate: seriesEventData && 'seriesEndDate' in seriesEventData ? new Date(seriesEventData.seriesEndDate) : null,
+                isSeriesEvent: seriesEventData && 'isSeriesEvent' in seriesEventData ? seriesEventData.isSeriesEvent : null,
+                seriesID: seriesEventData && 'seriesID' in seriesEventData ? seriesEventData.seriesID : null,
+            });
             // if(otherData.eve)
         } catch (error) {
             console.error("Error loading data: ", error);

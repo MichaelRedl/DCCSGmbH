@@ -25,7 +25,6 @@
     "typedef-whitespace": false,
     "use-named-parameter": true,
     "variable-name": false,
-    "whitespace": false,
-    "no-any": false
+    "whitespace": false
   }
 }

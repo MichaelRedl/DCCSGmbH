@@ -1,12 +1,12 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/core-build/serve.schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/spfx-serve.schema.json",
   "port": 4321,
   "https": true,
   "serveConfigurations": {
     "default": {
-      "pageUrl": "https://dev19.dccs-demo.at/projects/KUKComm",
+      "pageUrl": "https://michaelredl.sharepoint.com/SitePages/en/Home.aspx",
       "customActions": {
-        "dcecca58-0575-4f44-a487-f56120ba8990": {
+        "4509671c-a54b-423f-af49-47e57c922e7e": {
           "location": "ClientSideExtension.ApplicationCustomizer",
           "properties": {
             "testMessage": "Test message"
@@ -14,10 +14,10 @@
         }
       }
     },
-    "multilevelNavigation": {
-      "pageUrl": "https://dev19.dccs-demo.at/projects/KUKComm",
+    "customTheme": {
+      "pageUrl": "https://michaelredl.sharepoint.com/SitePages/en/Home.aspx",
       "customActions": {
-        "dcecca58-0575-4f44-a487-f56120ba8990": {
+        "4509671c-a54b-423f-af49-47e57c922e7e": {
           "location": "ClientSideExtension.ApplicationCustomizer",
           "properties": {
             "testMessage": "Test message"

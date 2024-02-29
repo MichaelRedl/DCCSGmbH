@@ -1,0 +1,42 @@
+
+[class^="headerRow"] {
+    background-color: RGBA(88,166,58,1) !important;
+}
+
+[class^="headerRow"] a{
+    background-color: RGBA(88,166,58,1) !important;
+}
+
+[class^="simpleFooterContainer"] {
+    background-color: RGBA(88,166,58,1) !important;
+}
+
+.ms-HubNav{
+    background-color: RGBA(5,62,25,1) !important;
+    border-bottom: rRGBA(5,62,25,1) !important;
+}
+
+/*:global {
+    .ms-HubNav{
+        background-color: red !important;
+    }
+}*/
+
+/*
+[class^="headerRow"] {
+    background-color: RGBA(5,62,25,1) !important;
+}
+
+[class^="headerRow"] a{
+    background-color: RGBA(5,62,25,1) !important;
+}
+
+[class^="simpleFooterContainer"] {
+    background-color: RGBA(5,62,25,1)!important;
+}
+
+.ms-HubNav{
+    background-color: RGBA(88,166,58,1) !important;
+    border-bottom: RGBA(88,166,58,1)!important;
+}
+*/
