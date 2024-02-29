@@ -81,6 +81,17 @@ export default class MultilevelNavigationApplicationCustomizer
       if (div) {
         div.appendChild(navdiv);
         div.appendChild(editNavigationDiv);
+
+        //sometimes the navdiv gets attached twice so i have to remove one. I tried a lot of things but it only works this way.
+        const navDivs = document.querySelectorAll('div.navdiv');
+        if (navDivs.length === 2) {
+          navDivs[1].remove();
+        }
+        const editNavDivs = document.querySelectorAll('div.editNavdiv');
+        if (editNavDivs.length === 2) {
+          editNavDivs[1].remove();
+        }
+        
       } else {
         let div = document.querySelector('.ms-siteHeader-siteInfo') as HTMLElement | null;
         if (div) {
@@ -108,13 +119,13 @@ export default class MultilevelNavigationApplicationCustomizer
     const interval = 1000; // Interval in milliseconds (1000ms = 1 second)
     const duration = 20000; // Duration to keep checking (20000ms = 20 seconds)
     const endTime = Date.now() + duration;
-  
+
     const checkFunction = () => {
       const feedbackDiv = document.querySelector('div[class^="feedback"]') as HTMLElement;
-  
+
       if (feedbackDiv) {
         const msButtonAnchor = feedbackDiv.querySelector('a[class^="ms-Button MobileUpsellView"]') as HTMLElement | null;
-  
+
         if (msButtonAnchor) {
 
           if (!feedbackDiv.querySelector('.customButton')) {
@@ -127,7 +138,7 @@ export default class MultilevelNavigationApplicationCustomizer
             facebookButton.appendChild(facebookIcon);
             feedbackDiv.appendChild(facebookButton);
 
-            facebookButton.addEventListener('click', function() {
+            facebookButton.addEventListener('click', function () {
               window.open('https://www.facebook.com/kepleruniklinikum', '_blank');
             });
 
@@ -139,12 +150,12 @@ export default class MultilevelNavigationApplicationCustomizer
             youtubeIcon.src = youtubeIconUrl;
             youtubeButton.appendChild(youtubeIcon);
             feedbackDiv.appendChild(youtubeButton);
-          
-            youtubeButton.addEventListener('click', function() {
+
+            youtubeButton.addEventListener('click', function () {
               window.open('https://www.youtube.com/channel/UC78WqbBYYk8q-tYk5OPu69g', '_blank');
             });
           }
-  
+
           clearInterval(intervalId);
         }
       } else if (Date.now() > endTime) {
@@ -201,7 +212,7 @@ export default class MultilevelNavigationApplicationCustomizer
     //Get navigation links from NavLinks list and store the links in the arrays
     this.getListItems().then(items => {
       navString = items[0].NavLinks;
-     //navString = "Bing%=https://bing.com%#Mapple%=https://apple.com%&Google%=https://google.com%?Bing%=https://bing.com%#Der superduper längste Link, den man sich nur irgendwie vorstellen kann. Echt lange.%=https://apple.com%&Apple%=https://apple.com%?Apple%=https://apple.com%!Google%=https://google.com%#Google%=https://google.com%!Dies ist ebenfalls ein super super langer link, es ist kaum zu glauben%=https://%!Google Goolge Goolge Goolge Go%=https://google.com"
+      //navString = "Bing%=https://bing.com%#Mapple%=https://apple.com%&Google%=https://google.com%?Bing%=https://bing.com%#Der superduper längste Link, den man sich nur irgendwie vorstellen kann. Echt lange.%=https://apple.com%&Apple%=https://apple.com%?Apple%=https://apple.com%!Google%=https://google.com%#Google%=https://google.com%!Dies ist ebenfalls ein super super langer link, es ist kaum zu glauben%=https://%!Google Goolge Goolge Goolge Go%=https://google.com"
       tempArray = navString.split('%&');
 
       //Get Layer 1 Links
