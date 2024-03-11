@@ -91,7 +91,7 @@ export default class MultilevelNavigationApplicationCustomizer
         if (editNavDivs.length === 2) {
           editNavDivs[1].remove();
         }
-        
+
       } else {
         let div = document.querySelector('.ms-siteHeader-siteInfo') as HTMLElement | null;
         if (div) {
@@ -128,6 +128,9 @@ export default class MultilevelNavigationApplicationCustomizer
 
         if (msButtonAnchor) {
 
+          const customButtonContainerDiv = document.createElement('div');
+          customButtonContainerDiv.className = "customButtonContainer";
+
           if (!feedbackDiv.querySelector('.customButton')) {
             // Add Facebook Button
             const facebookButton = document.createElement('div');
@@ -136,7 +139,8 @@ export default class MultilevelNavigationApplicationCustomizer
             const facebookIcon = document.createElement('img');
             facebookIcon.src = facebookIconUrl;
             facebookButton.appendChild(facebookIcon);
-            feedbackDiv.appendChild(facebookButton);
+            customButtonContainerDiv.appendChild(facebookButton);
+            // feedbackDiv.appendChild(customButtonContainerDiv);
 
             facebookButton.addEventListener('click', function () {
               window.open('https://www.facebook.com/kepleruniklinikum', '_blank');
@@ -145,14 +149,43 @@ export default class MultilevelNavigationApplicationCustomizer
             // Add Youtube Button
             const youtubeButton = document.createElement('div');
             youtubeButton.className = 'customButton';
-            const youtubeIconUrl: string = require('./Images/youtube-icon.png');
+            const youtubeIconUrl: string = require('./Images/YouTube.png');
             const youtubeIcon = document.createElement('img');
             youtubeIcon.src = youtubeIconUrl;
             youtubeButton.appendChild(youtubeIcon);
-            feedbackDiv.appendChild(youtubeButton);
+            customButtonContainerDiv.appendChild(youtubeButton);
+            //   feedbackDiv.appendChild(customButtonContainerDiv);
 
             youtubeButton.addEventListener('click', function () {
               window.open('https://www.youtube.com/channel/UC78WqbBYYk8q-tYk5OPu69g', '_blank');
+            });
+
+            // Add Instagram Button
+            const instagramButton = document.createElement('div');
+            instagramButton.className = 'customButton';
+            const instagramIconUrl: string = require('./Images/Instagram.png');
+            const instagramIcon = document.createElement('img');
+            instagramIcon.src = instagramIconUrl;
+            instagramButton.appendChild(instagramIcon);
+            customButtonContainerDiv.appendChild(instagramButton);
+            //     feedbackDiv.appendChild(instagramButton);
+
+            instagramButton.addEventListener('click', function () {
+              window.open('https://www.instagram.com/kepleruniklinikum/', '_blank');
+            });
+
+            // Add LinkedIn Button
+            const linkedinButton = document.createElement('div');
+            linkedinButton.className = 'customButton';
+            const linkedinIconUrl: string = require('./Images/LinkedIn.png');
+            const linkedinIcon = document.createElement('img');
+            linkedinIcon.src = linkedinIconUrl;
+            linkedinButton.appendChild(linkedinIcon);
+            customButtonContainerDiv.appendChild(linkedinButton);
+            feedbackDiv.appendChild(customButtonContainerDiv);
+
+            linkedinButton.addEventListener('click', function () {
+              window.open('https://www.linkedin.com/company/kepleruniklinikum/', '_blank');
             });
           }
 

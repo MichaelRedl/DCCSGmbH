@@ -13,7 +13,7 @@
     "no-eval": false,
     "no-function-expression": true,
     "no-internal-module": true,
-    "no-shadowed-variable": false,
+    "no-shadowed-variable": true,
     "no-switch-case-fall-through": true,
     "no-unnecessary-semicolons": true,
     "no-unused-expression": true,
@@ -25,7 +25,6 @@
     "typedef-whitespace": false,
     "use-named-parameter": true,
     "variable-name": false,
-    "whitespace": false,
-    "no-any": false
+    "whitespace": false
   }
 }

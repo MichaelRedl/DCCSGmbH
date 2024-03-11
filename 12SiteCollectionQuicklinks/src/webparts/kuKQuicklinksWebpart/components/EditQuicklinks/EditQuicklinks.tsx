@@ -19,10 +19,10 @@ export interface IEditQuicklinksState {
 /* tslint:disable:typedef */
 /* tslint:disable:no-shadowed-variable */
 export default class EditQuicklinks extends React.Component<IEditQuicklinksProps, IEditQuicklinksState> {
-  //  private siteUrl: string = this.props.context.pageContext.site.absoluteUrl; // DCCS SiteUrl
+    private siteUrl: string = this.props.context.pageContext.site.absoluteUrl; // DCCS SiteUrl
   // private siteUrl: string = 'https:// xintranet.kepleruniklinikum.at/sites/Landing'; // KUK siteUrl
-  private urlParts = this.props.context.pageContext.site.absoluteUrl.split('/');
-  private siteUrl = this.urlParts.slice(0, 3).join('/');
+/*  private urlParts = this.props.context.pageContext.site.absoluteUrl.split('/');
+  private siteUrl = this.urlParts.slice(0, 3).join('/');*/
   private personalLinksItemId: string = '';
   constructor(props: IEditQuicklinksProps) {
     super(props);

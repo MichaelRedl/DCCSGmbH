@@ -7,7 +7,7 @@
 }
 
 .customButton {
-	background-color: #e60000;
+	background-color: RGBA(255,255,255,1);
 	/* Primary button background color */
 	color: #ffffff;
 	/* Text color */
@@ -32,25 +32,30 @@
 	height: 35px;
 	display: flex;
 	justify-content: center;
-	padding: 5px;
+	padding: 0px;
 	margin-left:10px;
 }
 
 .customButton:hover {
-	background-color: #b50202;
+	background-color: RGBA(255,255,255,1);
 	/* Darker shade on hover */
 }
 
 .customButton:active {
-	background-color: #b50202;
+	background-color: RGBA(255,255,255,1);
 	/* Even darker shade when active/clicked */
 }
 
 .customButton:focus {
-	outline: 1px solid #b50202;
+	outline: 1px solid RGBA(255,255,255,1);
 	/* Focus outline to ensure accessibility */
 	outline-offset: 2px;
 	/* Offset for the outline */
+}
+
+.customButtonContainer {
+	display: flex;
+	margin-right: 25px;
 }
 
 .chevron::before {

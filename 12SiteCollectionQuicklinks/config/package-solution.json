@@ -1,0 +1,12 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
+  "solution": {
+    "name": "ku-k-quicklinks-webpart-client-side-solution",
+    "id": "f8942e11-e188-451e-8773-6451220f407f",
+    "version": "1.0.0.0",
+    "includeClientSideAssets": true
+  },
+  "paths": {
+    "zippedPackage": "solution/ku-k-quicklinks-webpart.sppkg"
+  }
+}

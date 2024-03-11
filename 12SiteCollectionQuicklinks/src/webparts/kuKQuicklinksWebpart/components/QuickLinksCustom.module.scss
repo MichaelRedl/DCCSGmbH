@@ -1,0 +1,358 @@
+@import '~@microsoft/sp-office-ui-fabric-core/dist/sass/SPFabricCore.scss';
+
+@font-face {
+  font-family: "ApexSerif-Book";
+  src: url("./font/ApexSerifBookRegular.eot");
+  /* IE9*/
+  src: url("./font/ApexSerifBookRegular.eot?#iefix") format("embedded-opentype"),
+    /* IE6-IE8 */
+    url("./font/ApexSerifBookRegular.woff") format("woff"),
+    /* chrome、firefox */
+    url("./font/ApexSerifBookRegular.ttf") format("truetype");
+  /* chrome、firefox、opera、Safari, Android, iOS 4.2+*/
+  // url("//db.onlinewebfonts.com/t/482a5ce5cc2d6708aee6f23df25886d6.svg#Apex Serif Book") format("svg"); 
+  // url("./css/482a5ce5cc2d6708aee6f23df25886d6.svg#ApexSerif-Book") format("svg"); /* iOS 4.1- */
+  font-family: "ApexSerif-Book";
+}
+
+.customFont {
+  font-family: "ApexSerif-Book";
+}
+
+.fontsize1 {
+  font-size: 22px;
+  margin-bottom: 10px;
+}
+
+.headingContainer{
+  display: flex;
+  columns: 1fr, 1fr;
+  margin-bottom: 10px;
+}
+
+.customHeading{
+  color: RGBA(230,0,0,1);
+}
+
+.placeholder {
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  margin-top: 10px;
+  column-gap: 1.4%;
+  row-gap: 20px;
+  //max-height: 700px;
+  overflow: auto;
+
+
+
+  .box {
+    //width: 18%;
+    aspect-ratio: 1.28;
+    border: 1px solid rgb(234, 234, 235);
+    /* padding-left: 10px;
+    padding-right: 10px;*/
+    /* min-width: 15%;
+    max-width: 15%;
+    padding-bottom: 1%;*/
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    outline: none;
+    flex-direction: column;
+    cursor: pointer;
+  }
+
+
+  .boxTitleButton {
+    color: #575757 !important;
+    background-color: white;
+    font-size: auto;
+    font-weight: normal;
+    /*font-family: Georgia, 'Times New Roman', Times, serif;*/
+    font-family: ApexSerif-Book;
+    letter-spacing: 2;
+    border: 0;
+    line-height: normal;
+    padding-top: 0;
+    margin: 0;
+    width: 100%;
+    height: 2.8em;
+    max-height: 2.8em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    word-wrap: break-word;
+    margin-top: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+  }
+
+  .boxTitleButton:hover {
+    cursor: pointer;
+    color: RGBA(230,0,0,1);
+  }
+
+  .boxTitleButton:hover~.box {
+    border-bottom: 2px solid RGBA(230,0,0,1);
+  }
+
+  .boxClampText {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    /* number of lines to show */
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+
+  .boxImageDiv {
+    border-radius: 50%;
+    width: 37%;
+    aspect-ratio: 1;
+    background-color: rgba(234, 234, 235, 1);
+    color: rgba(234, 234, 235, 1);
+    border: none !important;
+    margin-top: 10px;
+
+  }
+
+  .boxImage {
+    width: 50%;
+    margin-left: 25%;
+    margin-top: 25%;
+  }
+}
+
+.placeholder2 {
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  z-index: 2;
+  background-color: white;
+  gap: 6px;
+  max-height: 85%;
+  column-gap: 10px;
+  row-gap: 20px;
+
+  .box {
+    width: 31%;
+    aspect-ratio: 1.28;
+    border: 1px solid rgb(234, 234, 235);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    outline: none;
+    flex-direction: column;
+    align-self: start;
+    cursor: pointer;
+  }
+
+
+  .boxTitleButton {
+    color: #575757 !important;
+    background-color: white;
+    font-size: 16px;
+    font-weight: normal;
+    /*font-family: Georgia, 'Times New Roman', Times, serif;*/
+    font-family: ApexSerif-Book;
+    letter-spacing: 2;
+    border: 0;
+    line-height: normal;
+    padding-top: 0;
+    margin: 0;
+    width: 100%;
+    height: 2.8em;
+    max-height: 2.8em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    word-wrap: break-word;
+    margin-top: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+  }
+
+  .boxTitleButton:hover {
+    cursor: pointer;
+    color: RGBA(230,0,0,1);
+  }
+
+  .boxTitleButton:hover~.box {
+    border-bottom: 2px solid RGBA(230,0,0,1);
+  }
+
+  .boxClampText {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    /* number of lines to show */
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+
+  .boxImageDiv {
+    border-radius: 50%;
+    width: 40%;
+    aspect-ratio: 1;
+    background-color: rgba(234, 234, 235, 1);
+    color: rgba(234, 234, 235, 1);
+    border: none !important;
+    margin-top: 2px;
+
+  }
+
+  .boxImage {
+    width: 50%;
+    margin-left: 25%;
+    margin-top: 25%;
+  }
+
+
+}
+
+.editContainer {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+.editQuicklinksContainer {
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  position: fixed;
+  z-index: 3;
+  top: 10%;
+  left: 8%;
+  width: 84%;
+  min-width: 700px;
+  min-height: 500px;
+  height: 80%;
+  background-color: white;
+  gap: 2%;
+  padding-left: 1.5%;
+  padding-right: 0.5%;
+  padding-top: 20px;
+
+  .servicesVerwalten {
+    width: 90%;
+    font-size: 20px;
+    height: 0px;
+    margin-bottom: 40px;
+  }
+
+  .editQuicklinksContainerBox {
+    width: 47.5%;
+    height: 90%;
+    /* margin-left: 2.5%;
+    margin-right: 2.5%;*/
+    /*top: 5%;
+    bottom: 5%;*/
+    background: white;
+    position: relative;
+    overflow: scroll;
+    height: 80%;
+  }
+
+  .closeButton {
+    position: absolute;
+    right: 3%;
+    cursor: pointer;
+    background-color: RGB(0, 0, 0, 0);
+    border: none;
+    z-index: 3;
+
+
+
+    font-size: 60px;
+    font-weight: 350;
+    top: 0;
+    
+  }
+
+  /* .saveButton{
+    right: 3%;
+
+    cursor: pointer;
+   // background-color: RGB(0,0,0,0);
+    border: none;
+    z-index: 3;
+  }*/
+
+
+
+
+  //Save Button Design
+  .saveButton {
+    appearance: none;
+    background-color: #FAFBFC;
+    border: 1px solid rgba(27, 31, 35, 0.15);
+    border-radius: 6px;
+    box-shadow: rgba(27, 31, 35, 0.04) 0 1px 0, rgba(255, 255, 255, 0.25) 0 1px 0 inset;
+    box-sizing: border-box;
+    color: #24292E;
+    cursor: pointer;
+    display: inline-block;
+    font-family: -apple-system, system-ui, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 20px;
+    list-style: none;
+    padding: 6px 16px;
+    position: relative;
+    transition: background-color 0.2s cubic-bezier(0.3, 0, 0.5, 1);
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    vertical-align: middle;
+    white-space: nowrap;
+    word-wrap: break-word;
+    bottom: 15px;
+  }
+
+  .saveButton:hover {
+    background-color: #F3F4F6;
+    text-decoration: none;
+    transition-duration: 0.1s;
+  }
+
+  .saveButton:disabled {
+    background-color: #FAFBFC;
+    border-color: rgba(27, 31, 35, 0.15);
+    color: #959DA5;
+    cursor: default;
+  }
+
+  .saveButton:active {
+    background-color: #EDEFF2;
+    box-shadow: rgba(225, 228, 232, 0.2) 0 1px 0 inset;
+    transition: none 0s;
+  }
+
+  .saveButton:focus {
+    outline: 1px transparent;
+  }
+
+  .saveButton:before {
+    display: none;
+  }
+
+  .saveButton:-webkit-details-marker {
+    display: none;
+  }
+}

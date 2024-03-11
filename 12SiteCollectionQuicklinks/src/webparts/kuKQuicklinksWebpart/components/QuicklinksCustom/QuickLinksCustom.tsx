@@ -17,10 +17,10 @@ export interface IQuickLinksCustomState {
 /* tslint:disable:typedef */
 /* tslint:disable:no-shadowed-variable */
 export default class QuickLinksCustom extends React.Component<IQuickLinksCustomProps, IQuickLinksCustomState> {
-  //  private siteUrl: string = this.props.context.pageContext.site.absoluteUrl;   // DCCS siteUrl
+    private siteUrl: string = this.props.context.pageContext.site.absoluteUrl;   // DCCS siteUrl
   // private siteUrl: string = 'https:// xintranet.kepleruniklinikum.at/sites/landing'; // KUK siteUrl
-  private urlParts = this.props.context.pageContext.site.absoluteUrl.split('/');
-  private siteUrl = this.urlParts.slice(0, 3).join('/');
+/*  private urlParts = this.props.context.pageContext.site.absoluteUrl.split('/');
+  private siteUrl = this.urlParts.slice(0, 3).join('/');*/
   constructor(props: IQuickLinksCustomProps) {
     super(props);
 

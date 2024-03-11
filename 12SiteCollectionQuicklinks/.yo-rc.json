@@ -1,0 +1,11 @@
+{
+  "@microsoft/generator-sharepoint": {
+    "isCreatingSolution": true,
+    "environment": "onprem19",
+    "version": "1.10.0",
+    "libraryName": "ku-k-quicklinks-webpart",
+    "libraryId": "f8942e11-e188-451e-8773-6451220f407f",
+    "packageManager": "npm",
+    "componentType": "webpart"
+  }
+}
