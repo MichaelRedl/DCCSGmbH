@@ -1,0 +1,263 @@
+@import '~@microsoft/sp-office-ui-fabric-core/dist/sass/SPFabricCore.scss';
+
+@font-face {
+    //
+    //   font-family: "CustomFont";
+    // src: url("./fonts/ApexSansBook.ttf") format('truetype');
+    src: url("https://xintranet.kepleruniklinikum.at/sites/Landing/Shared%20Documents/Fonts/font.ttf") format('truetype');
+    /* IE9*/
+    //  src: url("./css/ApexSerifBookRegular.eot?#iefix") format("embedded-opentype"),
+    /* IE6-IE8 */
+    //    url("./css/ApexSerifBookRegular.woff") format("woff"),
+    /* chrome、firefox */
+    //    url("./css/ApexSerifBookRegular.ttf") format("truetype");
+    /* chrome、firefox、opera、Safari, Android, iOS 4.2+*/
+    // url("//db.onlinewebfonts.com/t/482a5ce5cc2d6708aee6f23df25886d6.svg#Apex Serif Book") format("svg"); 
+    // url("./css/482a5ce5cc2d6708aee6f23df25886d6.svg#CustomFont") format("svg"); /* iOS 4.1- */
+    //  font-family: "CustomFont";
+  //  font-family: "ApexSansBook";
+  font-family: "CustomFont";
+}
+
+[class^="column12"] a {
+  color: #575757 !important;
+}
+
+[class^="newsCenter"] [class*="author"]  {
+  background-color: #f0f0f2 !important;
+  color: #575757!important
+}
+
+
+
+:global {
+
+    [class^="ms-font"] {
+        font-family: "CustomFont";
+    }
+
+    [class*="ms-Button"] {
+        font-family: "CustomFont" !important;
+    }
+
+
+    .o365cs-me-tile-nophoto {
+      // color:red;
+      color: RGBA(0, 0, 0, 0.8)
+    }
+  
+    .o365cs-base .ms-Icon {
+      //   color:red;
+      color: RGBA(0, 0, 0, 0.8)
+    }
+  
+    .o365cs-me-tile-nophoto-username {
+      color: RGBA(230, 0, 0, 1);
+    }
+  
+  
+    .o365cs-nav-brandingText {
+      color: RGBA(230, 0, 0, 1);
+    }
+  
+    .owaimg .ms-Icon .ms-Icon--CaretSolidDown .ms-icon-font-size-11 .ms-fcl-nt .o365cs-me-tile-nophoto-down {
+      color: RGBA(230, 0, 0, 1);
+    }
+  
+    .o365cs-base .ms-Icon,
+    .o365cs-base .ms-Icon::before {
+      // color:red;
+      color: RGBA(0, 0, 0, 0.8);
+    }
+  
+    #O365_MainLink_NavMenu {
+      background-color: white;
+      color: RGBA(0, 0, 0, 0.8) !important;
+    }
+  
+    #O365_MainLink_NavMenu:hover {
+      background-color: RGBA(0, 0, 0, 0.1) !important;
+    }
+  
+    #O365_NavHeader {
+      background-color: white;
+    }
+  
+    .o365cs-base .o365cs-topnavText:hover {
+      background-color: RGBA(0, 0, 0, 0.1) !important;
+    }
+  
+    /*
+    .o365cs-base .ms-Icon, .o365cs-base .ms-Icon::before {
+      color: RGBA(0,0,0,0.8);
+    }*/
+    /*
+    .o365cs-base .ms-Icon{
+      color: RGBA(0,0,0,0.8);
+    }
+    .o365cs-nav-centerAlign{
+      background-color: white;
+    }
+  
+    .o365cs-base .o365cs-navMenuButton{
+      background: white;
+    }
+    */
+  
+    /*.SPPageChrome{
+      font-family: CustomFont !important;
+    }*/
+    .ms-Fabric {
+      font-family: "CustomFont" !important;
+    }
+  
+    .ms-Fabric {
+      font-family: "CustomFont" !important;
+    }
+  
+    .ms-ContextualMenu-itemText {
+      font-family: "CustomFont" !important;
+    }
+  
+    [data-automation-id="textBox"] h2 {
+      color: RGBA(230, 0, 0, 1) !important;
+    }
+  
+    [data-automation-id="textBox"] h3 {
+      color: RGBA(230, 0, 0, 1) !important;
+    }
+  
+    [data-automation-id="textBox"] h4 {
+      color: RGBA(230, 0, 0, 1) !important;
+    }
+  
+    [data-automation-id="textBox"] {
+      font-size: 16px;
+    }
+  
+    [data-automation-id="pageHeader"] span {
+      color: #575757 !important;
+    }
+  
+  
+    /*[data-automation-id="fontColor-propertyPaneButton"] {
+      display: none !important;
+    }*/
+    [data-automation-id="fontColor-propertyPaneButton"] {
+      font-size: 16px;
+    }
+  
+  
+  
+    .o365cs-me-tile-nophoto-username {
+      font-family: CustomFont;
+    }
+  
+    .demo {
+      font-family: "CustomFont" !important;
+      font-size: 16px;
+      font-style: normal;
+      -webkit-font-smoothing: antialiased;
+      -webkit-text-stroke-width: 0.2px;
+      -moz-osx-font-smoothing: grayscale;
+    }
+  
+    .newsCenter_e250777f a {
+      color: #575757;
+      text-decoration: none;
+    }
+  
+    .o365cs-base .ms-fcl-nt {
+      color: #fff !important;
+    }
+  
+    .SPPageChrome-app .ms-CommandBar {
+      background-color: #fff !important;
+    }
+  }
+  
+  .demo {
+    font-family: "CustomFont" !important;
+    font-size: 16px;
+    font-style: normal;
+    -webkit-font-smoothing: antialiased;
+    -webkit-text-stroke-width: 0.2px;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  .placeholder {
+    display: block;
+  }
+  
+  .kukCssFix {
+    .container {
+      max-width: 700px;
+      margin: 0px auto;
+      box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 25px 50px 0 rgba(0, 0, 0, 0.1);
+    }
+  
+    .row {
+      @include ms-Grid-row;
+      @include ms-fontColor-white;
+      background-color: $ms-color-themeDark;
+      padding: 20px;
+    }
+  
+    .column {
+      @include ms-Grid-col;
+      @include ms-lg10;
+      @include ms-xl8;
+      @include ms-xlPush2;
+      @include ms-lgPush1;
+    }
+  
+    .title {
+      @include ms-font-xl;
+      @include ms-fontColor-white;
+    }
+  
+    .subTitle {
+      @include ms-font-l;
+      @include ms-fontColor-white;
+    }
+  
+    .description {
+      @include ms-font-l;
+      @include ms-fontColor-white;
+    }
+  
+    .button {
+      // Our button
+      text-decoration: none;
+      height: 32px;
+  
+      // Primary Button
+      min-width: 80px;
+      background-color: $ms-color-themePrimary;
+      border-color: $ms-color-themePrimary;
+      color: $ms-color-white;
+  
+      // Basic Button
+      outline: transparent;
+      position: relative;
+      font-family: "Segoe UI WestEuropean", "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", sans-serif;
+      -webkit-font-smoothing: antialiased;
+      font-size: $ms-font-size-m;
+      font-weight: $ms-font-weight-regular;
+      border-width: 0;
+      text-align: center;
+      cursor: pointer;
+      display: inline-block;
+      padding: 0 16px;
+  
+      .label {
+        font-weight: $ms-font-weight-semibold;
+        font-size: $ms-font-size-m;
+        height: 32px;
+        line-height: 32px;
+        margin: 0 4px;
+        vertical-align: top;
+        display: inline-block;
+      }
+    }
+  }

@@ -2,12 +2,12 @@
 	display: none;
 }
 
-.ms-Nav {
+/*.ms-Nav {
 	display: none;
-}
+}*/
 
 .customButton {
-	background-color: RGBA(255,255,255,1);
+	background-color: RGBA(255, 255, 255, 1);
 	/* Primary button background color */
 	color: #ffffff;
 	/* Text color */
@@ -33,21 +33,21 @@
 	display: flex;
 	justify-content: center;
 	padding: 0px;
-	margin-left:10px;
+	margin-left: 10px;
 }
 
 .customButton:hover {
-	background-color: RGBA(255,255,255,1);
+	background-color: RGBA(255, 255, 255, 1);
 	/* Darker shade on hover */
 }
 
 .customButton:active {
-	background-color: RGBA(255,255,255,1);
+	background-color: RGBA(255, 255, 255, 1);
 	/* Even darker shade when active/clicked */
 }
 
 .customButton:focus {
-	outline: 1px solid RGBA(255,255,255,1);
+	outline: 1px solid RGBA(255, 255, 255, 1);
 	/* Focus outline to ensure accessibility */
 	outline-offset: 2px;
 	/* Offset for the outline */
@@ -244,20 +244,32 @@
 	width: 150px;
 }
 
+.editNavDivContainer {
+	height: 100%;
+	width: 100%;
+	overflow: scroll;
+	position: absolute;
+	left: 0px;
+	top: 50px;
+	display: block;
+}
+
 .editNavdiv {
 	padding-top: 30px;
 	position: absolute;
 	width: 280px;
-	height: 100%;
+	/*height: calc(100% - 80px);*/
 	background-color: white;
 	left: 0px;
 	display: none;
-	top: 48px;
 	z-index: 1000;
 	border-right: 1px solid rgb(207, 207, 207);
 	/*overflow-y: auto;*/
-}
+	/*overflow: scroll;
+	overflow-x: hidden;*/
+	padding-bottom: 400px;
 
+}
 
 .grandChildAddButton {
 	/*

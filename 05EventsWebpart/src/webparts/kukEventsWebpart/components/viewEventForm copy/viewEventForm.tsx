@@ -330,11 +330,17 @@ export default class ViewEventForm extends React.Component<IviewEventsProps, Ivi
                             disabled={!this.state.isEditMode}
                             required={true}
                         />
-                        <Dropdown label='Ort'
+                    {/*    <Dropdown label='Ort'
                             onChanged={this.handleOrtChange}
                             disabled={!this.state.isEditMode}
                             options={this.state.ortOptions}
                             {...(this.state.firstLoad ? { selectedKey: Number(this.state.Ort) } : {})}
+                        /> */}
+                         <TextField
+                            label='Ort'
+                            value={this.state.OrtName}
+                            onChanged={this.handleOrtChange}
+                            disabled={!this.state.isEditMode}
                         />
                         <div className={styles.height10p}></div>
                         {this.state.isSeriesEvent && (
@@ -439,8 +445,11 @@ export default class ViewEventForm extends React.Component<IviewEventsProps, Ivi
         });
     }
 
-    private handleOrtChange = (item) => {
+  /*  private handleOrtChange = (item) => {
         this.setState({ Ort: String(item.key), OrtName: item.text });
+    } */
+    private handleOrtChange = (event: string) => {
+        this.setState({ OrtName: event || '' });
     }
 
     private handleBeschreibungChange = (event: string) => {

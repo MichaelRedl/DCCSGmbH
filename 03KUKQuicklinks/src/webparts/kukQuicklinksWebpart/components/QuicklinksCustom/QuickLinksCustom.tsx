@@ -17,7 +17,7 @@ export interface IQuickLinksCustomState {
 /* tslint:disable:typedef */
 /* tslint:disable:no-shadowed-variable */
 export default class QuickLinksCustom extends React.Component<IQuickLinksCustomProps, IQuickLinksCustomState> {
-  //  private siteUrl: string = this.props.context.pageContext.site.absoluteUrl;   // DCCS siteUrl
+  // private siteUrl: string = this.props.context.pageContext.site.absoluteUrl;   // DCCS siteUrl
   // private siteUrl: string = 'https:// xintranet.kepleruniklinikum.at/sites/landing'; // KUK siteUrl
   private urlParts = this.props.context.pageContext.site.absoluteUrl.split('/');
   private siteUrl = this.urlParts.slice(0, 3).join('/');
@@ -36,7 +36,7 @@ export default class QuickLinksCustom extends React.Component<IQuickLinksCustomP
   public handleClick = (rediretionLink: string, event: React.MouseEvent<HTMLButtonElement>) => {
     window.open(rediretionLink, '_blank');
   }
-  public fetchListData = async (personalLinks: string) => {
+  public fetchListData = async (personalLinks: string, personalLinksArchive) => {
     try {
       const promises: Promise<IBoxDataObject>[] = []; //  Array to store all promises
       const url: string =
@@ -66,6 +66,7 @@ export default class QuickLinksCustom extends React.Component<IQuickLinksCustomP
         //  boxTitleLink: item.LinkLocation.Url
 
       }));
+      extractedData.sort((a, b) => a.boxTitle.localeCompare(b.boxTitle));
 
       let personalLinksIDs: Array<string> = [];
       if (personalLinks !== ';') {
@@ -102,10 +103,11 @@ export default class QuickLinksCustom extends React.Component<IQuickLinksCustomP
             });
           promises.push(promise);
         }
+        //promises.sort((a, b) => a.boxTitle.localeCompare(b.boxTitle));
       }
       const optionalDataResults: IBoxDataObject[] = await Promise.all(promises);
       // console.log(optionalDataResults);
-      const optionalDataResults2: IBoxDataObject[] = [];
+      let optionalDataResults2: IBoxDataObject[] = [];
 
       for (let i: number = 0; i < optionalDataResults.length; i++) {
         if (optionalDataResults[i].boxTitle !== '0') {
@@ -113,6 +115,7 @@ export default class QuickLinksCustom extends React.Component<IQuickLinksCustomP
 
         }
       }
+      optionalDataResults2.sort((a, b) => a.boxTitle.localeCompare(b.boxTitle));
       // console.log(optionalDataResults2);
 
       const allLinks: Array<IBoxDataObject> = extractedData.concat(optionalDataResults2);
@@ -165,6 +168,38 @@ export default class QuickLinksCustom extends React.Component<IQuickLinksCustomP
 
     return optLinks;
   }
+
+  public async savePersonalLinksItem(quicklinks, personalLinksItemId, quicklinksArchive) {
+    const endpoint: string = `${this.siteUrl}/_api/web/lists/getbytitle
+    ('PersonalLinks')/items(${personalLinksItemId})`;
+    const headers: any = {
+      'Accept': 'application/json;odata=nometadata',
+      'Content-type': 'application/json;odata=nometadata',
+      'odata-version': '',
+      'IF-MATCH': '*',
+      'X-HTTP-Method': 'MERGE'
+    };
+    const body: string = JSON.stringify({
+      'Quicklinks': quicklinks,
+      'QuicklinksArchive': quicklinksArchive
+    });
+    this.props.context.spHttpClient.post(endpoint, SPHttpClient.configurations.v1,
+      { headers: headers, body: body })
+      .then((response: SPHttpClientResponse) => {
+        if (response.ok) {
+          console.log('changes saved');
+        } else {
+          response.json().then((responseJSON) => {
+            console.error(`Error status text: ${response.statusText}. Message:
+                     ${responseJSON.error.message.value}`);
+          });
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+
   public async getPersonalLinksItem(userPrincipalName: string, userID: string) {
     const temp = await this.getOptionalLinkIDs();
     const optionalLinks: string = temp.join(';');
@@ -176,14 +211,30 @@ export default class QuickLinksCustom extends React.Component<IQuickLinksCustomP
       })
       .then((data: any) => {
         if (data.value.length > 0) {
-          this.fetchListData(data.value[0].Quicklinks);
+          // Here we need to figure out wheter there are new links that need to be added to the personal Links item
+          const optionalLinksArray = optionalLinks.split(';').filter(n => n);
+          let personalLinksArray: string[] = [];
+          if (data.value[0].QuicklinksArchive !== undefined) {
+            personalLinksArray = data.value[0].QuicklinksArchive.split(';').filter(n => n);
+          }
+          const newLinksArray = optionalLinksArray.filter(link => personalLinksArray.indexOf(link) === -1);
+          const newLinks = newLinksArray.join(';') + (newLinksArray.length > 0 ? ';' : '');
+
+          // Save newLinks to personalLinks
+          if (newLinks !== '') {
+            this.savePersonalLinksItem(data.value[0].Quicklinks
+              + newLinks, data.value[0].Id, data.value[0].QuicklinksArchive + newLinks);
+          }
+
+          this.fetchListData(data.value[0].Quicklinks + newLinks, data.value[0].QuicklinksArchive);
         } else {
           // Create personal links item
           const url: string = this.siteUrl + `/_api/web/lists/getbytitle('PersonalLinks')/items`;
           const options: ISPHttpClientOptions = {
             body: JSON.stringify({
               'Title': userPrincipalName,
-              'Quicklinks': optionalLinks + ';'
+              'Quicklinks': optionalLinks + ';',
+              'QuicklinksArchive': optionalLinks + ';'
             }),
             headers: {
               'accept': 'application/json;odata=nometadata',
@@ -219,7 +270,7 @@ export default class QuickLinksCustom extends React.Component<IQuickLinksCustomP
                         console.error(error);
                       });
 
-                    this.fetchListData( optionalLinks + ';');
+                    this.fetchListData(optionalLinks + ';', undefined);
                     resolve(true);
                   } else {
                     resolve(false);

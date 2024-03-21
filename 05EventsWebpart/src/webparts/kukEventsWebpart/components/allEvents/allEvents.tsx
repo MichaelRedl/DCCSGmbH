@@ -66,7 +66,7 @@ export default class AllEvents extends React.Component<IAllEventsProps, IAllEven
     }
 
     public getEvents = async (from: any, until: any, veranstalter: any, zielgruppe: any,
-         katArray: any, location: any, internalPresentersEmails: any, externalPresentersEmails: any) => {
+        katArray: any, location: any, internalPresentersEmails: any, externalPresentersEmails: any) => {
         try {
             const today: Date = new Date();
             today.setHours(0, 0, 0, 0); // Set to the start of today
@@ -111,8 +111,10 @@ export default class AllEvents extends React.Component<IAllEventsProps, IAllEven
                 location: item.Location,
                 category: item.Category,
                 id: item.Id,
-                eventData: JSON.parse(item.EventData) || { OrtName: undefined, Veranstalter: undefined,
-                     Zielgruppe: undefined, Ort: undefined, InternerVortragendeMail: undefined, ExternerVortragendeMail: undefined }
+                eventData: JSON.parse(item.EventData) || {
+                    OrtName: undefined, Veranstalter: undefined,
+                    Zielgruppe: undefined, Ort: undefined, InternerVortragendeMail: undefined, ExternerVortragendeMail: undefined
+                }
                 /* day: '13',
                  month: 'August'*/
 
@@ -121,23 +123,23 @@ export default class AllEvents extends React.Component<IAllEventsProps, IAllEven
             // Filter based on 'veranstalter', 'zielgruppe', 'kategorie' and 'ort'
             if (veranstalter) {
                 eventsItems = eventsItems.filter(item => item.eventData.Veranstalter &&
-                     item.eventData.Veranstalter.includes(veranstalter));
+                    item.eventData.Veranstalter.includes(veranstalter));
             }
             if (zielgruppe && !zielgruppe.includes('7')) {
                 for (let i = 0; i < zielgruppe.length; i++) {
                     eventsItems = eventsItems.filter(item => item.eventData.Zielgruppe &&
-                         item.eventData.Zielgruppe.includes(zielgruppe[i]));
+                        item.eventData.Zielgruppe.includes(zielgruppe[i]));
                 }
             }
             if (katArray && !katArray.includes('4')) {
                 for (let i = 0; i < katArray.length; i++) {
                     eventsItems = eventsItems.filter(item => item.eventData.Kategorien &&
-                         item.eventData.Kategorien.includes(katArray[i]));
+                        item.eventData.Kategorien.includes(katArray[i]));
                 }
             }
             if (location && Number(location) !== this.state.ortOptions.length) {
                 eventsItems = eventsItems.filter(item => item.eventData.Ort &&
-                     item.eventData.Ort.includes(location));
+                    item.eventData.Ort.includes(location));
             }
 
             if (this.state.internalPresentersEmails.length > 0) {
@@ -145,7 +147,7 @@ export default class AllEvents extends React.Component<IAllEventsProps, IAllEven
                     let matchFound = false;
                     for (let email of this.state.internalPresentersEmails) {
                         if (item.eventData.InternerVortragendeMail &&
-                             item.eventData.InternerVortragendeMail.includes(email)) {
+                            item.eventData.InternerVortragendeMail.includes(email)) {
                             matchFound = true;
                             break; // Stop searching if a match is found
                         }
@@ -159,7 +161,7 @@ export default class AllEvents extends React.Component<IAllEventsProps, IAllEven
                     let matchFound = false;
                     for (let email of this.state.externalPresentersEmails) {
                         if (item.eventData.ExternerVortragendeMail &&
-                             item.eventData.ExternerVortragendeMail.includes(email)) {
+                            item.eventData.ExternerVortragendeMail.includes(email)) {
                             matchFound = true;
                             break; // Stop searching if a match is found
                         }
@@ -274,7 +276,24 @@ export default class AllEvents extends React.Component<IAllEventsProps, IAllEven
     }
 
     public componentDidMount(): void {
-        this.getEvents(undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined);
+        /*this.setState({ eventsData: [],
+            hoveredEventIndex: undefined,
+            selectedDate: undefined,
+            selectedDate2: undefined,
+            selectedDateString: undefined,
+            selectedDate2String: undefined,
+            ortOptions: undefined,
+            veranstalter: undefined,
+            zielgruppe: [],
+            Kategorien: [],
+            Ort: undefined,
+            internalPresentersEmails: [],
+            externalPresentersEmails: []});*/
+
+        this.getEvents(this.state.selectedDateString, this.state.selectedDate2String,
+            this.state.veranstalter, this.state.zielgruppe, this.state.Kategorien,
+            this.state.Ort, this.state.internalPresentersEmails, this.state.externalPresentersEmails);
+        //this.getEvents(undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined);
         this.getOrtOptions();
     }
 
@@ -292,8 +311,8 @@ export default class AllEvents extends React.Component<IAllEventsProps, IAllEven
         const dateString: string = date.toISOString();
         if (date) { this.setState({ selectedDate: date, selectedDateString: dateString }); }
         this.getEvents(dateString, this.state.selectedDate2String,
-         this.state.veranstalter, this.state.zielgruppe, this.state.Kategorien,
-          this.state.Ort, this.state.internalPresentersEmails, this.state.externalPresentersEmails);
+            this.state.veranstalter, this.state.zielgruppe, this.state.Kategorien,
+            this.state.Ort, this.state.internalPresentersEmails, this.state.externalPresentersEmails);
     }
 
     public handleDateChange2 = (date: Date | undefined | undefined): void => {
@@ -303,8 +322,8 @@ export default class AllEvents extends React.Component<IAllEventsProps, IAllEven
         dateString = temp.toISOString();
         if (date) { this.setState({ selectedDate2: date, selectedDate2String: dateString }); }
         this.getEvents(this.state.selectedDateString, dateString, this.state.veranstalter,
-             this.state.zielgruppe, this.state.Kategorien, this.state.Ort,
-              this.state.internalPresentersEmails, this.state.externalPresentersEmails);
+            this.state.zielgruppe, this.state.Kategorien, this.state.Ort,
+            this.state.internalPresentersEmails, this.state.externalPresentersEmails);
     }
 
     public createCalendarFile(item: any): void {
@@ -373,7 +392,7 @@ export default class AllEvents extends React.Component<IAllEventsProps, IAllEven
 
                         </div>
                         <div className={styles.dateCointainer}>
-                            <div className={styles.certainWidth}><Dropdown
+                            <div className={styles.certainWidth2}><Dropdown
                                 placeHolder='Select options'
                                 label='Zielgruppe'
                                 multiSelect
@@ -392,14 +411,16 @@ export default class AllEvents extends React.Component<IAllEventsProps, IAllEven
                              {...(this.state.firstLoad ? { selectedKeys: this.state.Zielgruppe } : {})}
                              disabled={!this.state.isEditMode}*/
                             /></div>
-                            <div className={styles.certainWidth}><TextField
+                            <div className={styles.certainWidth2}><TextField
                                 label='Veranstalter'
                                 onChanged={this.handleVeranstalterChange}
                                 /*value={this.state.veranstalter} onChanged={this.handleVeranstalterChange}
                             disabled={!this.state.isEditMode} *//>
 
                             </div>
-                            <div className={styles.certainWidth}><Dropdown
+                        </div>
+                        <div className={styles.dateCointainer}>
+                            <div className={styles.certainWidth2}><Dropdown
                                 placeHolder='Select options'
                                 label='Kategorien'
                                 multiSelect
@@ -415,7 +436,7 @@ export default class AllEvents extends React.Component<IAllEventsProps, IAllEven
                              disabled={!this.state.isEditMode}*/
                             />
                             </div>
-                            <div className={styles.certainWidth}>
+                            <div className={styles.certainWidth2}>
                                 <Dropdown label='Ort'
                                     options={this.state.ortOptions}
                                     onChanged={this.handleOrtChange}
@@ -488,9 +509,11 @@ export default class AllEvents extends React.Component<IAllEventsProps, IAllEven
                                     </div>
                                     <div className={styles.width100}>
                                         {eventsItem.eventData.OrtName && eventsItem.eventData.OrtName !== 'undefined' &&
-                                         (<img alt='altname' className={styles.icon} src={locationIcon}></img>)}
+                                            eventsItem.eventData.OrtName !== 'null' &&
+                                            (<img alt='altname' className={styles.icon} src={locationIcon}></img>)}
                                         {eventsItem.eventData.OrtName && eventsItem.eventData.OrtName !== 'undefined' &&
-                                         (<div className={styles.location}>{eventsItem.eventData.OrtName}</div>)}
+                                            eventsItem.eventData.OrtName !== 'null' &&
+                                            (<div className={styles.location}>{eventsItem.eventData.OrtName}</div>)}
                                     </div>
                                     <div className={styles.width100}>
                                         <div role='none' className={styles.addToCalendar} onClick={(event) => {
@@ -508,9 +531,9 @@ export default class AllEvents extends React.Component<IAllEventsProps, IAllEven
                     this.state.showViewEventForm && (
                         <div>
                             <ViewEventForm componentDidMount={() => this.componentDidMount()}
-                             description={this.props.description} context={this.props.context}
+                                description={this.props.description} context={this.props.context}
                                 handleButtonClick={() => this.handleClick4(undefined)}
-                                 formItemId={this.state.formItemId}></ViewEventForm>
+                                formItemId={this.state.formItemId}></ViewEventForm>
                         </div>
                     )
                 }
@@ -522,7 +545,7 @@ export default class AllEvents extends React.Component<IAllEventsProps, IAllEven
             const items = await sp.web.lists.getByTitle('Orte').items.select('Title').get();
             let ortOptions = items.map((item, index) => ({ key: index + 1, text: item.Title }));
             let allKey = ortOptions.length + 1;
-            ortOptions.unshift({key: allKey, text: 'Alle'});
+            ortOptions.unshift({ key: allKey, text: 'Alle' });
             this.setState({ ortOptions });
 
         } catch (error) {
@@ -542,15 +565,15 @@ export default class AllEvents extends React.Component<IAllEventsProps, IAllEven
         }
         this.setState({ zielgruppe: zielArray });
         this.getEvents(this.state.selectedDateString, this.state.selectedDate2String,
-             this.state.veranstalter, zielArray, this.state.Kategorien, this.state.Ort,
-              this.state.internalPresentersEmails, this.state.externalPresentersEmails);
+            this.state.veranstalter, zielArray, this.state.Kategorien, this.state.Ort,
+            this.state.internalPresentersEmails, this.state.externalPresentersEmails);
     }
 
     private handleVeranstalterChange = (event: string) => {
         this.setState({ veranstalter: event || '' });
         this.getEvents(this.state.selectedDateString, this.state.selectedDate2String,
-             event, this.state.zielgruppe, this.state.Kategorien, this.state.Ort,
-              this.state.internalPresentersEmails, this.state.externalPresentersEmails);
+            event, this.state.zielgruppe, this.state.Kategorien, this.state.Ort,
+            this.state.internalPresentersEmails, this.state.externalPresentersEmails);
     }
 
     private handleKategorieChange = (item) => {
@@ -564,23 +587,23 @@ export default class AllEvents extends React.Component<IAllEventsProps, IAllEven
         }
         this.setState({ Kategorien: katArray });
         this.getEvents(this.state.selectedDateString, this.state.selectedDate2String,
-             this.state.veranstalter, this.state.zielgruppe, katArray, this.state.Ort,
-              this.state.internalPresentersEmails, this.state.externalPresentersEmails);
+            this.state.veranstalter, this.state.zielgruppe, katArray, this.state.Ort,
+            this.state.internalPresentersEmails, this.state.externalPresentersEmails);
     }
 
     private handleOrtChange = (item) => {
         this.setState({ Ort: String(item.key) });
         this.getEvents(this.state.selectedDateString, this.state.selectedDate2String,
-             this.state.veranstalter, this.state.zielgruppe, this.state.Kategorien, String(item.key),
-              this.state.internalPresentersEmails, this.state.externalPresentersEmails);
+            this.state.veranstalter, this.state.zielgruppe, this.state.Kategorien, String(item.key),
+            this.state.internalPresentersEmails, this.state.externalPresentersEmails);
     }
 
     private handleInternalPresenterChange = (items: any[]) => {
         const internalPresentersEmails = items.map(item => item.secondaryText);
         this.setState({ internalPresentersEmails }, () => {
             this.getEvents(this.state.selectedDateString, this.state.selectedDate2String,
-                 this.state.veranstalter, this.state.zielgruppe, this.state.Kategorien,
-                  this.state.Ort, internalPresentersEmails, this.state.externalPresentersEmails);
+                this.state.veranstalter, this.state.zielgruppe, this.state.Kategorien,
+                this.state.Ort, internalPresentersEmails, this.state.externalPresentersEmails);
         });
     };
 
@@ -588,8 +611,8 @@ export default class AllEvents extends React.Component<IAllEventsProps, IAllEven
         const externalPresentersEmails = items.map(item => item.secondaryText);
         this.setState({ externalPresentersEmails }, () => {
             this.getEvents(this.state.selectedDateString, this.state.selectedDate2String,
-                 this.state.veranstalter, this.state.zielgruppe, this.state.Kategorien,
-                  this.state.Ort, this.state.internalPresentersEmails, externalPresentersEmails);
+                this.state.veranstalter, this.state.zielgruppe, this.state.Kategorien,
+                this.state.Ort, this.state.internalPresentersEmails, externalPresentersEmails);
         });
     };
 }

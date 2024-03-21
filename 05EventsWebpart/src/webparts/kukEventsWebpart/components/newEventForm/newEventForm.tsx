@@ -251,7 +251,7 @@ export default class NewEventForm extends React.Component<InewEventsProps, InewE
                         {this.state.dateErrorShowing && (<div className={styles.DateError}>
                             Das Enddatum darf nicht vor dem Startdatum liegen!</div>)}
                         {this.state.dateErrorShowing2 && (<div className={styles.DateError}>
-                           Serien-Events müssen jeweils am selben Tag stattfinden!</div>)}
+                            Serien-Events müssen jeweils am selben Tag stattfinden!</div>)}
 
                         <TextField
                             multiline
@@ -309,9 +309,14 @@ export default class NewEventForm extends React.Component<InewEventsProps, InewE
                             onChanged={this.handleKategorieChange}
                             required={true}
                         />
-                        <Dropdown label='Ort'
+                        {/*   <Dropdown label='Ort'
                             onChanged={this.handleOrtChange}
-                            options={this.state.ortOptions} />
+                            options={this.state.ortOptions} /> */}
+                        <TextField
+                            label='Ort'
+                            value={this.state.OrtName}
+                            onChanged={this.handleOrtChange}
+                        />
                         <div className={styles.height10p}></div>
                         <Checkbox
                             label="Serie?"
@@ -392,8 +397,12 @@ export default class NewEventForm extends React.Component<InewEventsProps, InewE
         this.setState({ title: newValue || '' });
     }
 
-    private handleOrtChange = (item) => {
-        this.setState({ Ort: String(item.key), OrtName: item.text });
+    /* private handleOrtChange = (item) => {
+         this.setState({ Ort: String(item.key), OrtName: item.text });
+     } */
+
+    private handleOrtChange = (newValue: string) => {
+        this.setState({ OrtName: newValue || '' });
     }
 
     private handleBeschreibungChange = (newValue: string) => {
@@ -602,14 +611,20 @@ export default class NewEventForm extends React.Component<InewEventsProps, InewE
                     alert("Serien-Events dürfen nicht mehr als 50 Events umfassen.");
                     return 0;
                 }
+                let temphh1 = this.state.hh1;
+                let temphh2 = this.state.hh2;
+                let tempmm1 = this.state.mm1;
+                let tempmm2 = this.state.mm2;
+                
                 for (let i = 0; i < eventDatesArray.length; i++) {
                     // Combine date and time for EventDate
-                    eventDate = eventDatesArray[i];
-                    eventDate.setHours(Number(this.state.hh1), Number(this.state.mm1), 0, 0);
-
+                    eventDate = new Date(eventDatesArray[i].getTime());
+                    //            eventDate.setHours(Number(this.state.hh1), Number(this.state.mm1), 0, 0);
+                    eventDate.setHours(Number(temphh1), Number(tempmm1), 0, 0);
                     // Combine date and time for EndDate
-                    endDate = eventDatesArray[i];
-                    endDate.setHours(Number(this.state.hh2), Number(this.state.mm2), 0, 0);
+                    endDate = new Date(eventDatesArray[i].getTime());
+                    //           endDate.setHours(Number(this.state.hh2), Number(this.state.mm2), 0, 0);
+                    endDate.setHours(Number(temphh2), Number(tempmm2), 0, 0);
                     await sp.web.lists.getByTitle("Events").items.add({
                         Title: this.state.title,
                         EventDate: eventDate,

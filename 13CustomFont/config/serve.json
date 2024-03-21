@@ -4,9 +4,9 @@
   "https": true,
   "serveConfigurations": {
     "default": {
-      "pageUrl": "https://dev19.dccs-demo.at/projects/KUKComm/_layouts/15/viewlsts.aspx?view=14",
+      "pageUrl": "https://michaelredl.sharepoint.com/sites/TestEnviria/",
       "customActions": {
-        "dcecca58-0575-4f44-a487-f56120ba8990": {
+        "a3d92d9c-3c42-476b-94d9-4fbf0bb58e0b": {
           "location": "ClientSideExtension.ApplicationCustomizer",
           "properties": {
             "testMessage": "Test message"
@@ -14,10 +14,10 @@
         }
       }
     },
-    "multilevelNavigation": {
-      "pageUrl": "https://dev19.dccs-demo.at/projects/KUKComm/_layouts/15/viewlsts.aspx?view=14",
+    "customFont": {
+      "pageUrl": "https://michaelredl.sharepoint.com/sites/TestEnviria/",
       "customActions": {
-        "dcecca58-0575-4f44-a487-f56120ba8990": {
+        "a3d92d9c-3c42-476b-94d9-4fbf0bb58e0b": {
           "location": "ClientSideExtension.ApplicationCustomizer",
           "properties": {
             "testMessage": "Test message"

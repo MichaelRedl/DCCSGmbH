@@ -7,6 +7,22 @@ import { Dialog } from '@microsoft/sp-dialog';
 import { SPHttpClient, SPHttpClientCommonConfiguration, SPHttpClientResponse, ISPHttpClientOptions } from '@microsoft/sp-http';
 import { PageContext } from '@microsoft/sp-page-context';
 import './custom.css'
+/* tslint:disable: max-line-length*/
+/* tslint:disable: no-consecutive-blank-lines*/
+/* tslint:disable: no-any*/
+/* tslint:disable: no-function-expression*/
+/* tslint:disable: no-shadowed-variable*/
+/* tslint:disable: no-trailing-whitespace*/
+/* tslint:disable: member-ordering*/
+/* tslint:disable: no-use-before-declare*/
+/* tslint:disable: one-line*/
+/* tslint:disable: no-unused-variable*/
+/* tslint:disable: quotemark*/
+/* tslint:disable: prefer-const*/
+/* tslint:disable: semicolon*/
+/* tslint:disable: typedef*/
+/* tslint:disable:  variable-name*/
+/* tslint:disable: semicolon*/
 
 import * as strings from 'MultilevelNavigationApplicationCustomizerStrings';
 
@@ -18,19 +34,35 @@ const LOG_SOURCE: string = 'MultilevelNavigationApplicationCustomizer';
  * You can define an interface to describe it.
  */
 export interface IMultilevelNavigationApplicationCustomizerProperties {
-  // This is an example; replace with your own property
+  //  This is an example; replace with your own property
   testMessage: string;
 }
 
 /** A Custom Action which can be run during execution of a Client Side Application */
 export default class MultilevelNavigationApplicationCustomizer
   extends BaseApplicationCustomizer<IMultilevelNavigationApplicationCustomizerProperties> {
-  //Attributes
+  // Attributes
   public editDivLoading: boolean = false;
   public addButtonContextShowing: boolean = false;
   public rootSiteCollectionUrl: string = "";
   @override
   public onInit(): Promise<void> {
+
+
+    /* const pathName = this.context.pageContext.site.absoluteUrl;
+     const msNav = document.querySelector('.ms-nav') as HTMLElement;
+ 
+     if (msNav) {
+       //  If the URL contains '/abteilungen/', set .ms-nav to display: block, else to display: none
+       if (pathName.indexOf('/abteilungen/') !== -1) {
+         msNav.style.display = 'block';
+       } else {
+         msNav.style.display = 'none';
+       }
+     }
+ */
+
+
     Log.info(LOG_SOURCE, `Initialized ${strings.Title}`);
 
     let message: string = this.properties.testMessage;
@@ -41,17 +73,17 @@ export default class MultilevelNavigationApplicationCustomizer
 
 
 
-    //Get root site collection url
+    // Get root site collection url
     let urlParts = this.context.pageContext.site.absoluteUrl.split('/');
     this.rootSiteCollectionUrl = urlParts.slice(0, 3).join('/');
 
 
     this.checkAndModifyFeedbackDiv();
 
-    //Create NavList if NavList does not exst yet. The links of the custom navigation will be stored in this List.
+    // Create NavList if NavList does not exst yet. The links of the custom navigation will be stored in this List.
     this.checkListExists();
 
-    // Create div for custom navigation
+    //  Create div for custom navigation
     let navdiv: HTMLDivElement = document.createElement('div');
     navdiv.classList.add('navdiv');
 
@@ -59,9 +91,13 @@ export default class MultilevelNavigationApplicationCustomizer
 
 
 
-    //Create editNavigationDiv. The user later cad edit the navigation using this div
+    // Create editNavigationDiv. The user later cad edit the navigation using this div
     let editNavigationDiv: HTMLDivElement = document.createElement('div');
     editNavigationDiv.classList.add('editNavdiv');
+
+    let editNavDivContainer: HTMLDivElement = document.createElement('div');
+    editNavDivContainer.classList.add('editNavDivContainer');
+    // editNavigationDiv.classList.add('clearfix');
     editNavigationDiv.classList.add('ms-Fabric');
 
 
@@ -72,28 +108,30 @@ export default class MultilevelNavigationApplicationCustomizer
 
 
 
+
     setTimeout(() => {
-      //Render navigation
+      // Render navigation
       this.renderNavdiv(navdiv);
-      //Get the div with the class ms-compositeHEader-headerAndNavContainer. The custom navigation will be added to this div. 
+      // Get the div with the class ms-compositeHEader-headerAndNavContainer. The custom navigation will be added to this div. 
       let div = document.querySelector('.ms-compositeHeader-headerAndNavContainer') as HTMLElement | null;
-      //Append the navdiv to the div, if it exists  
+      // Append the navdiv to the div, if it exists  
       if (div) {
         div.appendChild(navdiv);
         div.appendChild(editNavigationDiv);
 
-        //sometimes the navdiv gets attached twice so i have to remove one. I tried a lot of things but it only works this way.
+        // sometimes the navdiv gets attached twice so i have to remove one. I tried a lot of things but it only works this way.
         const navDivs = document.querySelectorAll('div.navdiv');
-        if (navDivs.length === 2) {
+        if (navDivs.length == 2) {
           navDivs[1].remove();
         }
         const editNavDivs = document.querySelectorAll('div.editNavdiv');
-        if (editNavDivs.length === 2) {
+        if (editNavDivs.length == 2) {
           editNavDivs[1].remove();
         }
 
       } else {
         let div = document.querySelector('.ms-siteHeader-siteInfo') as HTMLElement | null;
+        // let div = document.querySelector('.od-TopBar-header') as HTMLElement | null;
         if (div) {
           navdiv.style.marginLeft = '2px';
           navdiv.style.position = 'absolute';
@@ -104,7 +142,7 @@ export default class MultilevelNavigationApplicationCustomizer
         } else {
           console.error('Could not find a div');
         }
-        // console.error('Couldnt find div with class ms-HorizontalNav');
+        //  console.error('Couldnt find div with class ms-HorizontalNav');
       }
     }, 1100);
 
@@ -113,11 +151,11 @@ export default class MultilevelNavigationApplicationCustomizer
     return Promise.resolve();
   }
 
-  //View (Everything that has to do with rendering HTML)
+  // View (Everything that has to do with rendering HTML)
 
   private checkAndModifyFeedbackDiv(): void {
-    const interval = 1000; // Interval in milliseconds (1000ms = 1 second)
-    const duration = 20000; // Duration to keep checking (20000ms = 20 seconds)
+    const interval = 1000; //  Interval in milliseconds (1000ms = 1 second)
+    const duration = 20000; //  Duration to keep checking (20000ms = 20 seconds)
     const endTime = Date.now() + duration;
 
     const checkFunction = () => {
@@ -132,7 +170,7 @@ export default class MultilevelNavigationApplicationCustomizer
           customButtonContainerDiv.className = "customButtonContainer";
 
           if (!feedbackDiv.querySelector('.customButton')) {
-            // Add Facebook Button
+            //  Add Facebook Button
             const facebookButton = document.createElement('div');
             facebookButton.className = 'customButton';
             const facebookIconUrl: string = require('./Images/Facebook.png');
@@ -140,13 +178,13 @@ export default class MultilevelNavigationApplicationCustomizer
             facebookIcon.src = facebookIconUrl;
             facebookButton.appendChild(facebookIcon);
             customButtonContainerDiv.appendChild(facebookButton);
-            // feedbackDiv.appendChild(customButtonContainerDiv);
+            //  feedbackDiv.appendChild(customButtonContainerDiv);
 
             facebookButton.addEventListener('click', function () {
-              window.open('https://www.facebook.com/kepleruniklinikum', '_blank');
+              window.open('https:// www.facebook.com/kepleruniklinikum', '_blank');
             });
 
-            // Add Youtube Button
+            //  Add Youtube Button
             const youtubeButton = document.createElement('div');
             youtubeButton.className = 'customButton';
             const youtubeIconUrl: string = require('./Images/YouTube.png');
@@ -154,13 +192,13 @@ export default class MultilevelNavigationApplicationCustomizer
             youtubeIcon.src = youtubeIconUrl;
             youtubeButton.appendChild(youtubeIcon);
             customButtonContainerDiv.appendChild(youtubeButton);
-            //   feedbackDiv.appendChild(customButtonContainerDiv);
+            //    feedbackDiv.appendChild(customButtonContainerDiv);
 
             youtubeButton.addEventListener('click', function () {
-              window.open('https://www.youtube.com/channel/UC78WqbBYYk8q-tYk5OPu69g', '_blank');
+              window.open('https:// www.youtube.com/channel/UC78WqbBYYk8q-tYk5OPu69g', '_blank');
             });
 
-            // Add Instagram Button
+            //  Add Instagram Button
             const instagramButton = document.createElement('div');
             instagramButton.className = 'customButton';
             const instagramIconUrl: string = require('./Images/Instagram.png');
@@ -168,13 +206,13 @@ export default class MultilevelNavigationApplicationCustomizer
             instagramIcon.src = instagramIconUrl;
             instagramButton.appendChild(instagramIcon);
             customButtonContainerDiv.appendChild(instagramButton);
-            //     feedbackDiv.appendChild(instagramButton);
+            //      feedbackDiv.appendChild(instagramButton);
 
             instagramButton.addEventListener('click', function () {
-              window.open('https://www.instagram.com/kepleruniklinikum/', '_blank');
+              window.open('https:// www.instagram.com/kepleruniklinikum/', '_blank');
             });
 
-            // Add LinkedIn Button
+            //  Add LinkedIn Button
             const linkedinButton = document.createElement('div');
             linkedinButton.className = 'customButton';
             const linkedinIconUrl: string = require('./Images/LinkedIn.png');
@@ -185,7 +223,7 @@ export default class MultilevelNavigationApplicationCustomizer
             feedbackDiv.appendChild(customButtonContainerDiv);
 
             linkedinButton.addEventListener('click', function () {
-              window.open('https://www.linkedin.com/company/kepleruniklinikum/', '_blank');
+              window.open('https:// www.linkedin.com/company/kepleruniklinikum/', '_blank');
             });
           }
 
@@ -198,7 +236,7 @@ export default class MultilevelNavigationApplicationCustomizer
     const intervalId = setInterval(checkFunction, interval);
   }
 
-  //This function creates and renders the edit button of the custom navigation
+  // This function creates and renders the edit button of the custom navigation
   public createEditButton(navdiv) {
     let editButtonDiv: HTMLDivElement = document.createElement('div');
     let link: HTMLAnchorElement = document.createElement('a');
@@ -207,7 +245,7 @@ export default class MultilevelNavigationApplicationCustomizer
     editButtonDiv.appendChild(link);
     editButtonDiv.classList.add('editButtonDiv');
     navdiv.appendChild(editButtonDiv);
-    //OnClick() the function editNavigation is called.
+    // OnClick() the function editNavigation is called.
     editButtonDiv.addEventListener('click', () => { if (this.editDivLoading == false) { this.editNavigation() } });
   }
 
@@ -217,10 +255,10 @@ export default class MultilevelNavigationApplicationCustomizer
     /*the links will get stored in the first list item of the NavList in the field "NavLinks". The field will be stored in navString.
     navString will have the following format: 
     ************************************************************************************************************************
-    "Bing%=https://bing.com%#Layer1Link1%=https://%#Layer1Link2%=https://%&
-    %#Layer2Link1%=https://%?Layer2Link2%=https://%#Layer2Link3%=https://%?Layer2Link4%=https://%&
-    %#Layer3Link1%=https://%!Layer3Link2%=https://%?Layer3Link3%=https://%!Layer3Link4%=https://%#
-    Layer3Link5%=https://%!Layer3Link6%=https://%?Layer3Link7%=https://%!Layer3Link8%=https://"
+    "Bing%=https:// bing.com%#Layer1Link1%=https:// %#Layer1Link2%=https:// %&
+    %#Layer2Link1%=https:// %?Layer2Link2%=https:// %#Layer2Link3%=https:// %?Layer2Link4%=https:// %&
+    %#Layer3Link1%=https:// %!Layer3Link2%=https:// %?Layer3Link3%=https:// %!Layer3Link4%=https:// %#
+    Layer3Link5%=https:// %!Layer3Link6%=https:// %?Layer3Link7%=https:// %!Layer3Link8%=https:// "
     ************************************************************************************************************************
     with:
     %= as separator between link name and link
@@ -231,30 +269,30 @@ export default class MultilevelNavigationApplicationCustomizer
     */
     let navString: string;
     /*These arrays will contain the links for each layer. 
-      layer1Links will have the format [["Layer1Link1", "https://layer1link1.com"], ["Layer1Link2", "https://layer1link2.com"]]
-      layer2Links will have the format [[["Layer2Link1", "https://layer2link1.com"], ["Layer2Link2", "https://layer2link2.com"]], [["Layer2Link3", "https://layer2link3.com"], ["Layer2Link4", "https://layer2link4.com"]]] 
-      layer3Links will have the format [[[["Layer3Link1", "https://layer3link1.com"], ["Layer3Link2", "https://layer3link2.com"]],
-                                        [["Layer3Link3", "https://layer3link3.com"], ["Layer3Link4", "https://4.com"]]],
-                                        [[["Layer3Link5", "https://layer3link5.com"], ["Layer3Link6", "https://layer3link6.com"]],
-                                        [["Layer3Link7", "https://layer3link7.com"], ["Layer3Link8", "https://layer3link8.com"]]]]*/
+      layer1Links will have the format [["Layer1Link1", "https:// layer1link1.com"], ["Layer1Link2", "https:// layer1link2.com"]]
+      layer2Links will have the format [[["Layer2Link1", "https:// layer2link1.com"], ["Layer2Link2", "https:// layer2link2.com"]], [["Layer2Link3", "https:// layer2link3.com"], ["Layer2Link4", "https:// layer2link4.com"]]] 
+      layer3Links will have the format [[[["Layer3Link1", "https:// layer3link1.com"], ["Layer3Link2", "https:// layer3link2.com"]],
+                                        [["Layer3Link3", "https:// layer3link3.com"], ["Layer3Link4", "https:// 4.com"]]],
+                                        [[["Layer3Link5", "https:// layer3link5.com"], ["Layer3Link6", "https:// layer3link6.com"]],
+                                        [["Layer3Link7", "https:// layer3link7.com"], ["Layer3Link8", "https:// layer3link8.com"]]]]*/
     let layer1Links = [];
     let layer2Links = [];
     let layer3Links = [];
     let tempArray = [];
 
-    //Get navigation links from NavLinks list and store the links in the arrays
+    // Get navigation links from NavLinks list and store the links in the arrays
     this.getListItems().then(items => {
       navString = items[0].NavLinks;
-      //navString = "Bing%=https://bing.com%#Mapple%=https://apple.com%&Google%=https://google.com%?Bing%=https://bing.com%#Der superduper längste Link, den man sich nur irgendwie vorstellen kann. Echt lange.%=https://apple.com%&Apple%=https://apple.com%?Apple%=https://apple.com%!Google%=https://google.com%#Google%=https://google.com%!Dies ist ebenfalls ein super super langer link, es ist kaum zu glauben%=https://%!Google Goolge Goolge Goolge Go%=https://google.com"
+      // navString = "Bing%=https:// bing.com%#Mapple%=https:// apple.com%&Google%=https:// google.com%?Bing%=https:// bing.com%#Der superduper längste Link, den man sich nur irgendwie vorstellen kann. Echt lange.%=https:// apple.com%&Apple%=https:// apple.com%?Apple%=https:// apple.com%!Google%=https:// google.com%#Google%=https:// google.com%!Dies ist ebenfalls ein super super langer link, es ist kaum zu glauben%=https:// %!Google Goolge Goolge Goolge Go%=https:// google.com"
       tempArray = navString.split('%&');
 
-      //Get Layer 1 Links
+      // Get Layer 1 Links
       layer1Links = tempArray[0].split('%#');
       for (let i = 0; i < layer1Links.length; i++) {
         layer1Links[i] = layer1Links[i].split('%=');
       }
 
-      //Get Layer 2 Links
+      // Get Layer 2 Links
       layer2Links = tempArray[1].split('%#');
       for (let i = 0; i < layer2Links.length; i++) {
         layer2Links[i] = layer2Links[i].split('%?');
@@ -263,7 +301,7 @@ export default class MultilevelNavigationApplicationCustomizer
         }
       }
 
-      //Get Layer 3 Links
+      // Get Layer 3 Links
       layer3Links = tempArray[2].split('%#');
       for (let i = 0; i < layer3Links.length; i++) {
         layer3Links[i] = layer3Links[i].split('%?');
@@ -276,7 +314,7 @@ export default class MultilevelNavigationApplicationCustomizer
 
       }
 
-      //Create layer 1 links by looping through the layer1Links array
+      // Create layer 1 links by looping through the layer1Links array
       for (let i = 0; i < layer1Links.length; i++) {
         let navdivItem: HTMLDivElement = document.createElement('div');
         navdivItem.classList.add('navdivItem');
@@ -285,17 +323,17 @@ export default class MultilevelNavigationApplicationCustomizer
         link.innerHTML = layer1Links[i][0];
         link.classList.add("navdivItemLink");
         navdivItem.appendChild(link);
-        //Create chevron down element
-        if (layer2Links[i] != '') {
+        // Create chevron down element
+        if (layer2Links[i][0][0] !== "") {
           let chevron: HTMLSpanElement = document.createElement('span');
           chevron.classList.add('chevron');
           navdivItem.appendChild(chevron);
         }
         let navdivItemContainer: HTMLDivElement = document.createElement('div');
         navdivItemContainer.classList.add('navdivItemContainer');
-        //Create layer 2 links by looping through the layer2Links array
+        // Create layer 2 links by looping through the layer2Links array
         for (let n = 0; n < layer2Links[i].length; n++) {
-          if (layer2Links[i][n][0] != "") {
+          if (layer2Links[i][n][0] !== "") {
             let navDivItemChild: HTMLDivElement = document.createElement('div');
             navDivItemChild.style.display = 'none';
             navDivItemChild.classList.add('navdivItemChild')
@@ -304,8 +342,10 @@ export default class MultilevelNavigationApplicationCustomizer
             link.innerHTML = layer2Links[i][n][0];
             link.classList.add("navdivItemLink2");
 
-            //Create chevron down element
-            if (layer3Links[i][n] != '') {
+            // Create chevron down element
+            if (layer3Links[i][n][0][0] !== "") {
+              console.log("LAYER2LINKS");
+              console.log(layer3Links[i][n][0][0]);
               let chevron: HTMLSpanElement = document.createElement('span');
               chevron.classList.add('chevronBlack');
               navDivItemChild.appendChild(chevron);
@@ -341,7 +381,7 @@ export default class MultilevelNavigationApplicationCustomizer
 
             document.body.addEventListener('click', function (event) {
               if (navdivItem.contains(event.target as Node)) {
-                // do nothing, click was inside container
+                //  do nothing, click was inside container
               } else {
                 navDivItemChild.style.display = 'none';
                 let divsToHide = document.querySelectorAll('.navdivItemContainer');
@@ -353,11 +393,11 @@ export default class MultilevelNavigationApplicationCustomizer
               }
 
             });
-            //Create layer 3 links by looping through the layer3Links array
+            // Create layer 3 links by looping through the layer3Links array
             let navdivItemContainer2: HTMLDivElement = document.createElement('div');
             navdivItemContainer2.classList.add('navdivItemContainer2');
             for (let m = 0; m < layer3Links[i][n].length; m++) {
-              if (layer3Links[i][n][m][0] != '') {
+              if (layer3Links[i][n][m][0] !== "") {
                 let navDivItemGrandChild: HTMLDivElement = document.createElement('div');
                 navDivItemGrandChild.style.display = 'none';
                 navDivItemGrandChild.classList.add('navdivItemGrandChild')
@@ -403,12 +443,13 @@ export default class MultilevelNavigationApplicationCustomizer
 
 
 
-  //This function renders the div to edit the navigation. This function is called when the user clicks on the "Bearbeiten" button inside the custom navigation
+  // This function renders the div to edit the navigation. This function is called when the user clicks on the "Bearbeiten" button inside the custom navigation
   public editNavigation() {
     this.editDivLoading = true;
     let body = document.querySelector('body') as HTMLElement | null;
+    // MR let editDiv = document.querySelector('.editNavdiv') as HTMLElement | null;
     let editDiv = document.querySelector('.editNavdiv') as HTMLElement | null;
-    editDiv.innerHTML = '';
+    editDiv.innerHTML = "";
     editDiv.style.display = 'block';
     let navString: string;
     let layer1Links = [];
@@ -416,19 +457,35 @@ export default class MultilevelNavigationApplicationCustomizer
     let layer3Links = [];
     let tempArray = [];
 
+    let deleteEditNavDivContainer = document.querySelector('editNavDivContainer') as HTMLDivElement | null;
+    if (deleteEditNavDivContainer) {
+      deleteEditNavDivContainer.remove();
+    }
+
+    let editNavDivContainer: HTMLDivElement = document.createElement('div');
+    editNavDivContainer.classList.add('editNavDivContainer');
+    /*
+        if(!document.querySelector('editNavDivContainer')){
+          let editNavDivContainer: HTMLDivElement = document.createElement('div');
+          editNavDivContainer.classList.add('editNavDivContainer');
+        } else {
+          let editNavDivContainer = document.querySelector('editNavDivContainer') as HTMLDivElement | null;
+        }
+    */
+
     /*This is basically the same procedure as rendering the main cusom navigation. First the stored links get loaded from the NavList. Then the 
     arrays with the layer1Links, layer2Links and layer3Links get created and later rendered in the div with the class "editNavdiv"*/
     this.getListItems().then(items => {
       navString = items[0].NavLinks;
       tempArray = navString.split('%&');
 
-      //Get layer 1 links
+      // Get layer 1 links
       layer1Links = tempArray[0].split('%#');
       for (let i = 0; i < layer1Links.length; i++) {
         layer1Links[i] = layer1Links[i].split('%=');
       }
 
-      //Get layer 2 links
+      // Get layer 2 links
       layer2Links = tempArray[1].split('%#');
       for (let i = 0; i < layer2Links.length; i++) {
         layer2Links[i] = layer2Links[i].split('%?');
@@ -437,7 +494,7 @@ export default class MultilevelNavigationApplicationCustomizer
         }
       }
 
-      //Get layer 3 links
+      // Get layer 3 links
       layer3Links = tempArray[2].split('%#');
       for (let i = 0; i < layer3Links.length; i++) {
         layer3Links[i] = layer3Links[i].split('%?');
@@ -457,19 +514,19 @@ export default class MultilevelNavigationApplicationCustomizer
         let link: HTMLDivElement = document.createElement('div');
         link.innerHTML = layer1Links[i][0];
         link.classList.add("editNavigationLink");
-        //The three dots are the dots of the context menu. The context menu opens when clicking on the three dots. 
+        // The three dots are the dots of the context menu. The context menu opens when clicking on the three dots. 
         let threeDots: HTMLDivElement = document.createElement('div');
         threeDots.innerHTML = '. . .';
         threeDots.classList.add('threeDots');
-        let str: string = '' + i + '#no#no';
+        let str: string = "" + i + '#no#no';
         this.createContextMenu(1, i, layer1Links, threeDots, str, layer1Links, layer2Links, layer3Links);
-        if (layer2Links[i] == '') {
+        if (layer2Links[i] == "") {
           let AddButton: HTMLDivElement = document.createElement('div');
           AddButton.innerHTML = '+';
           AddButton.classList.add('grandChildAddButton');
           this.addButtonContext(AddButton, str, layer1Links, layer2Links, layer3Links);
           AddButton.addEventListener('mouseover', () => {
-            //Event listeners for the AddButton. The AttButton and the line are visible on hover and on click
+            // Event listeners for the AddButton. The AttButton and the line are visible on hover and on click
             if (this.addButtonContextShowing == false) {
               AddButton.style.opacity = '1';
               lineDiv.style.opacity = '1';
@@ -519,9 +576,9 @@ export default class MultilevelNavigationApplicationCustomizer
         editDiv.appendChild(div);
 
 
-        //Create layer 2 links by looping through the array layer2Links
+        // Create layer 2 links by looping through the array layer2Links
         for (let n = 0; n < layer2Links[i].length; n++) {
-          if (layer2Links[i][n][0] != '') {
+          if (layer2Links[i][n][0] !== "") {
             let childDiv: HTMLDivElement = document.createElement('div');
             childDiv.classList.add("editNavigationChildDiv");
             let link: HTMLDivElement = document.createElement('div');
@@ -530,9 +587,9 @@ export default class MultilevelNavigationApplicationCustomizer
             let childThreeDots: HTMLDivElement = document.createElement('div');
             childThreeDots.innerHTML = '. . . ';
             childThreeDots.classList.add('threeDots');
-            let str: string = '' + i + '#' + n + '#no';
+            let str: string = "" + i + '#' + n + '#no';
             this.createContextMenu(2, n, layer2Links[i], childThreeDots, str, layer1Links, layer2Links, layer3Links);
-            if (layer3Links[i][n] == '') {
+            if (layer3Links[i][n] == "") {
               let ChildAddButton: HTMLDivElement = document.createElement('div');
               ChildAddButton.innerHTML = '+';
               ChildAddButton.classList.add('grandChildAddButton');
@@ -589,9 +646,9 @@ export default class MultilevelNavigationApplicationCustomizer
             editDiv.appendChild(childDiv);
           }
 
-          //Create layer 3 links by looping through the array layer3Links
+          // Create layer 3 links by looping through the array layer3Links
           for (let m = 0; m < layer3Links[i][n].length; m++) {
-            if (layer3Links[i][n][m][0] != '') {
+            if (layer3Links[i][n][m][0] !== "") {
               let grandChildDiv: HTMLDivElement = document.createElement('div');
               grandChildDiv.classList.add("editNavigationChildDiv");
               let link: HTMLDivElement = document.createElement('div');
@@ -600,7 +657,7 @@ export default class MultilevelNavigationApplicationCustomizer
               let grandChildThreeDots: HTMLDivElement = document.createElement('div');
               grandChildThreeDots.innerHTML = '. . . ';
               grandChildThreeDots.classList.add('threeDots');
-              let str: string = '' + i + '#' + n + '#' + m;
+              let str: string = "" + i + '#' + n + '#' + m;
               this.createContextMenu(3, m, layer3Links[i][n], grandChildThreeDots, str, layer1Links, layer2Links, layer3Links);
               let grandChildAddButton: HTMLDivElement = document.createElement('div');
               grandChildAddButton.innerHTML = '+';
@@ -660,9 +717,14 @@ export default class MultilevelNavigationApplicationCustomizer
       doneButton.innerHTML = 'Done';
       doneButton.classList.add('doneButton');
       doneButton.classList.add('button-4');
-      doneButton.addEventListener('click', () => editDiv.style.display = 'none');
+      doneButton.addEventListener('click', () => {
+        editDiv.style.display = 'none';
+        editNavDivContainer.style.display = 'none';
+      });
       editDiv.appendChild(doneButton);
-      body.appendChild(editDiv);
+      editNavDivContainer.appendChild(editDiv);
+      body.appendChild(editNavDivContainer);
+      // body.appendChild(editDiv);
       this.editDivLoading = false;
 
     }).catch(err => {
@@ -672,7 +734,7 @@ export default class MultilevelNavigationApplicationCustomizer
 
 
   }
-  //This button creates the context menu of the add button. Here the user is able to add a link name, the link itself and to save the newly created link
+  // This button creates the context menu of the add button. Here the user is able to add a link name, the link itself and to save the newly created link
   public addButtonContext(addbutton, str, layer1links, layer2links, layer3links) {
     let addButtonContextDiv: HTMLDivElement = document.createElement('div');
     addButtonContextDiv.classList.add('addButtonContextDiv');
@@ -683,7 +745,7 @@ export default class MultilevelNavigationApplicationCustomizer
     textDiv2.innerHTML = 'Address';
     textDiv2.classList.add('addButtonContextText');
     let linkInput: HTMLTextAreaElement = document.createElement('textarea');
-    linkInput.innerHTML = 'https://';
+    linkInput.innerHTML = 'https:// ';
     linkInput.classList.add('input1');
     let textDiv3: HTMLDivElement = document.createElement('div');
     textDiv3.innerHTML = 'Display name';
@@ -701,7 +763,7 @@ export default class MultilevelNavigationApplicationCustomizer
     cancelButton.classList.add('button-4');
 
     saveButton.addEventListener('click', () => {
-      if (nameInput.value != "") {
+      if (nameInput.value !== "") {
         this.createNewLink(str, nameInput.value, linkInput.value, layer1links, layer2links, layer3links)
         setTimeout(() => {
           this.addButtonContextShowing = false;
@@ -760,7 +822,7 @@ export default class MultilevelNavigationApplicationCustomizer
     let color = 'rgb(228, 228, 228)'
     if (layer == 1) {
       let contextDiv: HTMLDivElement = document.createElement('div');
-      if (iteration != 0) {
+      if (iteration !== 0) {
         let moveUpButton: HTMLDivElement = document.createElement('div');
         moveUpButton.innerHTML = 'Move up';
         moveUpButton.classList.add('contextButton');
@@ -768,7 +830,7 @@ export default class MultilevelNavigationApplicationCustomizer
         this.grayOnHover(moveUpButton, color);
         contextDiv.appendChild(moveUpButton);
       }
-      if (iteration != layerLinks.length - 1) {
+      if (iteration !== layerLinks.length - 1) {
         let moveDownButton: HTMLDivElement = document.createElement('div');
         moveDownButton.innerHTML = 'Move down';
         moveDownButton.classList.add('contextButton');
@@ -776,7 +838,7 @@ export default class MultilevelNavigationApplicationCustomizer
         this.grayOnHover(moveDownButton, color);
         contextDiv.appendChild(moveDownButton);
       }
-      if (l2[Number(i)][0][0] == "" && Number(i) != 0) {
+      if (l2[Number(i)][0][0] == "" && Number(i) !== 0) {
         let makeSubLinkButton: HTMLDivElement = document.createElement('div');
         makeSubLinkButton.innerHTML = 'Make sub link';
         this.grayOnHover(makeSubLinkButton, color);
@@ -795,7 +857,7 @@ export default class MultilevelNavigationApplicationCustomizer
       threedots.appendChild(contextDiv);
       document.body.addEventListener('click', function (event) {
         if (threedots.contains(event.target)) {
-          // do nothing, click was inside container
+          //  do nothing, click was inside container
         } else {
           contextDiv.style.display = 'none';
         }
@@ -804,7 +866,7 @@ export default class MultilevelNavigationApplicationCustomizer
     }
     if (layer == 2) {
       let contextDiv: HTMLDivElement = document.createElement('div');
-      if (iteration != 0) {
+      if (iteration !== 0) {
         let moveUpButton: HTMLDivElement = document.createElement('div');
         moveUpButton.innerHTML = 'Move up';
         moveUpButton.classList.add('contextButton');
@@ -812,7 +874,7 @@ export default class MultilevelNavigationApplicationCustomizer
         this.grayOnHover(moveUpButton, color);
         contextDiv.appendChild(moveUpButton);
       }
-      if (iteration != layerLinks.length - 1) {
+      if (iteration !== layerLinks.length - 1) {
         let moveDownButton: HTMLDivElement = document.createElement('div');
         moveDownButton.innerHTML = 'Move down';
         moveDownButton.classList.add('contextButton');
@@ -820,7 +882,7 @@ export default class MultilevelNavigationApplicationCustomizer
         this.grayOnHover(moveDownButton, color);
         contextDiv.appendChild(moveDownButton);
       }
-      if (l3[Number(i)][Number(n)][0][0] == "" && Number(n) != 0) {
+      if (l3[Number(i)][Number(n)][0][0] == "" && Number(n) !== 0) {
         let makeSubLinkButton: HTMLDivElement = document.createElement('div');
         makeSubLinkButton.innerHTML = 'Make sub link';
         makeSubLinkButton.classList.add('contextButton');
@@ -846,7 +908,7 @@ export default class MultilevelNavigationApplicationCustomizer
       threedots.appendChild(contextDiv);
       document.body.addEventListener('click', function (event) {
         if (threedots.contains(event.target)) {
-          // do nothing, click was inside container
+          //  do nothing, click was inside container
         } else {
           contextDiv.style.display = 'none';
         }
@@ -854,7 +916,7 @@ export default class MultilevelNavigationApplicationCustomizer
     }
     if (layer == 3) {
       let contextDiv: HTMLDivElement = document.createElement('div');
-      if (iteration != 0) {
+      if (iteration !== 0) {
         let moveUpButton: HTMLDivElement = document.createElement('div');
         moveUpButton.innerHTML = 'Move up';
         moveUpButton.classList.add('contextButton');
@@ -862,7 +924,7 @@ export default class MultilevelNavigationApplicationCustomizer
         this.grayOnHover(moveUpButton, color);
         contextDiv.appendChild(moveUpButton);
       }
-      if (iteration != layerLinks.length - 1) {
+      if (iteration !== layerLinks.length - 1) {
         let moveDownButton: HTMLDivElement = document.createElement('div');
         moveDownButton.innerHTML = 'Move down';
         moveDownButton.classList.add('contextButton');
@@ -886,7 +948,7 @@ export default class MultilevelNavigationApplicationCustomizer
       threedots.appendChild(contextDiv);
       document.body.addEventListener('click', function (event) {
         if (threedots.contains(event.target)) {
-          // do nothing, click was inside container
+          //  do nothing, click was inside container
         } else {
           contextDiv.style.display = 'none';
         }
@@ -907,7 +969,7 @@ export default class MultilevelNavigationApplicationCustomizer
 
   }
 
-  //This function makes the buttons of the three dots context menues gray on hover
+  // This function makes the buttons of the three dots context menues gray on hover
   public grayOnHover(div, color) {
     div.addEventListener('mouseenter', () => {
       div.style.backgroundColor = color;
@@ -918,7 +980,7 @@ export default class MultilevelNavigationApplicationCustomizer
   }
 
 
-  //This funciton creates a new link. It is called when the user clicks on the save button inside the add button context menu.
+  // This funciton creates a new link. It is called when the user clicks on the save button inside the add button context menu.
   public createNewLink(str, linkname, link, layer1Links, layer2Links, layer3Links) {
     let temparray = str.split('#');
     let i = temparray[0];
@@ -929,34 +991,34 @@ export default class MultilevelNavigationApplicationCustomizer
     if (n == 'no' && m == 'no') {
       if (i == String(layer1Links.length - 1)) {
         layer1Links.push([linkname, link]);
-        layer2Links.push([['']]);
-        layer3Links.push([[['']]]);
+        layer2Links.push([[""]]);
+        layer3Links.push([[[""]]]);
       }
       else {
 
         layer1Links.splice(Number(i) + 1, 0, [linkname, link]);
-        layer2Links.splice(Number(i) + 1, 0, [['']]);
-        layer3Links.splice(Number(i) + 1, 0, [[['']]]);
+        layer2Links.splice(Number(i) + 1, 0, [[""]]);
+        layer3Links.splice(Number(i) + 1, 0, [[[""]]]);
       }
 
       this.saveLinks(layer1Links, layer2Links, layer3Links);
 
     }
-    if (n != 'no' && m == 'no') {
+    if (n !== 'no' && m == 'no') {
       if (n == String(layer2Links[i].length - 1)) {
         layer2Links[i].push([linkname, link]);
-        layer3Links[i].push([['']]);
+        layer3Links[i].push([[""]]);
       }
       else {
         layer2Links[i].splice(Number(n) + 1, 0, [linkname, link]);
-        layer3Links[i].splice(Number(n) + 1, 0, [['']]);
+        layer3Links[i].splice(Number(n) + 1, 0, [[""]]);
       }
 
 
       this.saveLinks(layer1Links, layer2Links, layer3Links);
 
     }
-    if (m != 'no') {
+    if (m !== 'no') {
       if (m == String(layer3Links[i][n].length - 1)) {
         layer3Links[i][n].push([linkname, link]);
       }
@@ -970,7 +1032,7 @@ export default class MultilevelNavigationApplicationCustomizer
     }
 
   }
-  //Controller (All functions that interact with the model)
+  // Controller (All functions that interact with the model)
 
   /*This function saves the links to the field "NavLinks" of the first item in the list NavList.
   In order to do this the function has to create the string that gets stored in the list by joining all elements of the layerLinks arrays together.
@@ -985,16 +1047,16 @@ export default class MultilevelNavigationApplicationCustomizer
     */
   public saveLinks(layer1links, layer2links, layer3links) {
 
-    //Create layer 1 string
+    // Create layer 1 string
     for (let i = 0; i < layer1links.length; i++) {
       layer1links[i] = layer1links[i].join('%=');
     }
     layer1links = layer1links.join('%#');
 
-    //Create layer 2 string
+    // Create layer 2 string
     for (let i = 0; i < layer2links.length; i++) {
       for (let n = 0; n < layer2links[i].length; n++) {
-        if (layer2links[i][n] != "") {
+        if (layer2links[i][n] !== "") {
           layer2links[i][n] = layer2links[i][n].join('%=');
         }
       }
@@ -1004,11 +1066,11 @@ export default class MultilevelNavigationApplicationCustomizer
     }
     layer2links = layer2links.join('%#');
 
-    //Create layer 3 string
+    // Create layer 3 string
     for (let i = 0; i < layer3links.length; i++) {
       for (let n = 0; n < layer3links[i].length; n++) {
         for (let m = 0; m < layer3links[i][n].length; m++) {
-          if (layer3links[i][n][m] != "") {
+          if (layer3links[i][n][m] !== "") {
             layer3links[i][n][m] = layer3links[i][n][m].join('%=');
           }
         }
@@ -1025,12 +1087,12 @@ export default class MultilevelNavigationApplicationCustomizer
     }
     layer3links = layer3links.join('%#');
 
-    //Create navString that gets saved to NavList
+    // Create navString that gets saved to NavList
     let navString = layer1links + '%&' + layer2links + '%&' + layer3links;
 
 
 
-    //Save navString to NavList
+    // Save navString to NavList
     const endpoint: string = this.rootSiteCollectionUrl + "/_api/web/lists/getbytitle('NavList')/items(1)";
     const headers: any = {
       'Content-type': 'application/json;odata=nometadata',
@@ -1080,7 +1142,7 @@ export default class MultilevelNavigationApplicationCustomizer
       }
       this.saveLinks(layer1Links, layer2Links, layer3Links);
     }
-    if (n != 'no' && m == 'no') {
+    if (n !== 'no' && m == 'no') {
       if (n == String(layer2Links[i].length - 1)) {
         layer2Links[Number(i)].pop();
         layer3Links[Number(i)].pop();
@@ -1094,7 +1156,7 @@ export default class MultilevelNavigationApplicationCustomizer
       this.saveLinks(layer1Links, layer2Links, layer3Links);
 
     }
-    if (m != 'no') {
+    if (m !== 'no') {
       if (m == String(layer3Links[i][n].length - 1)) {
         layer3Links[Number(i)][Number(n)].pop();
       }
@@ -1106,7 +1168,7 @@ export default class MultilevelNavigationApplicationCustomizer
 
     }
   }
-  //This function moves a link up. It is called when clicking on the "Move up" button inside the three dots context menu.
+  // This function moves a link up. It is called when clicking on the "Move up" button inside the three dots context menu.
   public moveLinkUp(str, layer1links, layer2links, layer3links) {
     let temparray = str.split('#');
     let i = temparray[0];
@@ -1129,7 +1191,7 @@ export default class MultilevelNavigationApplicationCustomizer
 
     }
 
-    if (n != 'no' && m == 'no') {
+    if (n !== 'no' && m == 'no') {
       let temp = layer2links[Number(i)][Number(n) - 1];
       layer2links[Number(i)][Number(n) - 1] = layer2links[Number(i)][Number(n)];
       layer2links[Number(i)][Number(n)] = temp;
@@ -1140,7 +1202,7 @@ export default class MultilevelNavigationApplicationCustomizer
       this.saveLinks(layer1links, layer2links, layer3links);
 
     }
-    if (m != 'no') {
+    if (m !== 'no') {
       let temp = layer3links[Number(i)][Number(n)][Number(m) - 1];
       layer3links[Number(i)][Number(n)][Number(m) - 1] = layer3links[Number(i)][Number(n)][Number(m)];
       layer3links[Number(i)][Number(n)][Number(m)] = temp;
@@ -1149,7 +1211,7 @@ export default class MultilevelNavigationApplicationCustomizer
 
     }
   }
-  //This function moves a link down. It is called when clicking on the "Move down" button inside the three dots context menu.
+  // This function moves a link down. It is called when clicking on the "Move down" button inside the three dots context menu.
   public moveLinkDown(str, layer1links, layer2links, layer3links) {
     let temparray = str.split('#');
     let i = temparray[0];
@@ -1173,7 +1235,7 @@ export default class MultilevelNavigationApplicationCustomizer
 
     }
 
-    if (n != 'no' && m == 'no') {
+    if (n !== 'no' && m == 'no') {
       let temp = layer2links[Number(i)][Number(n) + 1];
       layer2links[Number(i)][Number(n) + 1] = layer2links[Number(i)][Number(n)];
       layer2links[Number(i)][Number(n)] = temp;
@@ -1184,7 +1246,7 @@ export default class MultilevelNavigationApplicationCustomizer
       this.saveLinks(layer1links, layer2links, layer3links);
 
     }
-    if (m != 'no') {
+    if (m !== 'no') {
       let temp = layer3links[Number(i)][Number(n)][Number(m) + 1];
       layer3links[Number(i)][Number(n)][Number(m) + 1] = layer3links[Number(i)][Number(n)][Number(m)];
       layer3links[Number(i)][Number(n)][Number(m)] = temp;
@@ -1193,7 +1255,7 @@ export default class MultilevelNavigationApplicationCustomizer
 
     }
   }
-  //This function moves a link one layer down. It is called when clicking on the "Make sublink" butto inside the three dots context menu
+  // This function moves a link one layer down. It is called when clicking on the "Make sublink" butto inside the three dots context menu
   public makeSubLink(str, layer1Links, layer2Links, layer3Links) {
 
     let temparray = str.split('#');
@@ -1208,7 +1270,7 @@ export default class MultilevelNavigationApplicationCustomizer
       }
       else {
         layer2Links[Number(i) - 1].push([layer1Links[Number(i)][0], layer1Links[Number(i)][1]]);
-        layer3Links[Number(i) - 1].push(['']);
+        layer3Links[Number(i) - 1].push([""]);
       }
 
       if (i == String(layer1Links.length - 1)) {
@@ -1229,7 +1291,7 @@ export default class MultilevelNavigationApplicationCustomizer
       this.saveLinks(layer1Links, layer2Links, layer3Links);
 
     }
-    if (n != 'no' && m == 'no') {
+    if (n !== 'no' && m == 'no') {
       if (layer3Links[Number(i)][Number(n) - 1][0][0] == "") {
         layer3Links[Number(i)][Number(n) - 1].splice(0, 1, [layer2Links[Number(i)][Number(n)][0], layer2Links[Number(i)][Number(n)][1]]);
       }
@@ -1255,7 +1317,7 @@ export default class MultilevelNavigationApplicationCustomizer
 
 
   }
-  //This function moves a link one layer up. It is called when clicking on the "Promote sublink" button inside the three dots context menu
+  // This function moves a link one layer up. It is called when clicking on the "Promote sublink" button inside the three dots context menu
   public promoteSubLink(str, layer1Links, layer2Links, layer3Links) {
 
     let temparray = str.split('#');
@@ -1264,13 +1326,13 @@ export default class MultilevelNavigationApplicationCustomizer
     let m = temparray[2];
 
 
-    if (n != 'no' && m == 'no') {
+    if (n !== 'no' && m == 'no') {
 
       layer1Links.splice(Number(i) + 1, 0, [layer2Links[Number(i)][Number(n)][0], layer2Links[Number(i)][Number(n)][1]])
       layer2Links.splice(Number(i) + 1, 0, layer3Links[Number(i)][Number(n)])
-      layer3Links.splice(Number(i) + 1, 0, [[['']]]);
+      layer3Links.splice(Number(i) + 1, 0, [[[""]]]);
       for (let a = 0; a < layer2Links[Number(i) + 1].length; a++) {
-        layer3Links[Number(i) + 1].splice(a, 1, [['']]);
+        layer3Links[Number(i) + 1].splice(a, 1, [[""]]);
       }
 
       layer2Links[Number(i)].splice(Number(n), 1);
@@ -1280,10 +1342,10 @@ export default class MultilevelNavigationApplicationCustomizer
 
     }
 
-    if (n != 'no' && m != 'no') {
+    if (n !== 'no' && m !== 'no') {
       layer2Links[Number(i)].splice(Number(n) + 1, 0, layer3Links[Number(i)][Number(n)][Number(m)]);
       layer3Links[Number(i)][Number(n)].splice(Number(m), 1);
-      layer3Links[Number(i)].splice(Number(n) + 1, 0, ['']);
+      layer3Links[Number(i)].splice(Number(n) + 1, 0, [""]);
 
       this.saveLinks(layer1Links, layer2Links, layer3Links);
 
@@ -1292,9 +1354,9 @@ export default class MultilevelNavigationApplicationCustomizer
 
 
   }
-  //Model (All functions that have to do with data handling
+  // Model (All functions that have to do with data handling
 
-  //This function gets the list item where the links are stored from the NavList
+  // This function gets the list item where the links are stored from the NavList
   public getListItems(): Promise<any> {
     const listName: string = 'NavList';
     const columns: string[] = ['Title', 'NavLinks'];
@@ -1309,13 +1371,13 @@ export default class MultilevelNavigationApplicationCustomizer
       }) as Promise<any>;
   }
 
-  //This function checks if the NavList already exists. If no, the function creeateNavList() is called in order to create the NavList
+  // This function checks if the NavList already exists. If no, the function creeateNavList() is called in order to create the NavList
   public checkListExists(): any {
     this.context.spHttpClient.get(this.rootSiteCollectionUrl + '/_api/web/lists',
       SPHttpClient.configurations.v1)
       .then((response: SPHttpClientResponse) => {
         response.json().then((lists: any) => {
-          let listExists = lists.value.some(list => list.Title === 'NavList');
+          let listExists = lists.value.some(list => list.Title == 'NavList');
           if (listExists) {
             return true;
           } else {
@@ -1327,7 +1389,7 @@ export default class MultilevelNavigationApplicationCustomizer
       });
   }
 
-  //This function creates the NavList
+  // This function creates the NavList
   public createNavList() {
     let urlToPost: string = `${this.rootSiteCollectionUrl}/_api/web/lists`;
     let listBody: any = {
@@ -1361,7 +1423,7 @@ export default class MultilevelNavigationApplicationCustomizer
     });
   }
 
-  //This funciton adds a column to the NavList. The column will have the name "NavLinks"
+  // This funciton adds a column to the NavList. The column will have the name "NavLinks"
   public addColumnToList(columnName) {
     const url: string = this.rootSiteCollectionUrl + `/_api/web/lists/getbytitle('NavList')/fields`;
     let options: ISPHttpClientOptions = {
@@ -1398,13 +1460,13 @@ export default class MultilevelNavigationApplicationCustomizer
   }
 
   /*This function creates the list item inside the NavList where the navigation links will be stored in the field "NavLinks". 
-  https://bing.com is added as the first link by default*/
+  https:// bing.com is added as the first link by default*/
   public createListItem() {
     const url: string = this.rootSiteCollectionUrl + `/_api/web/lists/getbytitle('NavList')/items`;
     let options: ISPHttpClientOptions = {
       body: JSON.stringify({
         'Title': 'My New Item',
-        'NavLinks': 'Bing%=https://bing.com%&%&'
+        'NavLinks': 'Bing%=https:// bing.com%&%&'
       }),
       headers: {
         'accept': 'application/json;odata=nometadata',

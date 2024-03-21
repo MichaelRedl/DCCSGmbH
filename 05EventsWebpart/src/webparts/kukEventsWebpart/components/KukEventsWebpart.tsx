@@ -313,8 +313,10 @@ export default class KukEventsWebpart extends React.Component<IKukEventsWebpartP
               </div>
               <div className={styles.locationContainer}>
                 {eventsItem.eventData.OrtName && eventsItem.eventData.OrtName !== 'undefined' &&
+                 eventsItem.eventData.OrtName !== 'null' &&
                  (<img alt='altname' className={styles.icon} src={locationIcon}></img>)}
                 {eventsItem.eventData.OrtName && eventsItem.eventData.OrtName !== 'undefined' &&
+                eventsItem.eventData.OrtName !== 'null' &&
                  (<div className={styles.location}>{eventsItem.eventData.OrtName}</div>)}
               </div>
 

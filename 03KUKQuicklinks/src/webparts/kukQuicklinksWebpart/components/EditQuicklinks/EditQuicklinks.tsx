@@ -19,7 +19,7 @@ export interface IEditQuicklinksState {
 /* tslint:disable:typedef */
 /* tslint:disable:no-shadowed-variable */
 export default class EditQuicklinks extends React.Component<IEditQuicklinksProps, IEditQuicklinksState> {
-  //  private siteUrl: string = this.props.context.pageContext.site.absoluteUrl; // DCCS SiteUrl
+   // private siteUrl: string = this.props.context.pageContext.site.absoluteUrl; // DCCS SiteUrl
   // private siteUrl: string = 'https:// xintranet.kepleruniklinikum.at/sites/Landing'; // KUK siteUrl
   private urlParts = this.props.context.pageContext.site.absoluteUrl.split('/');
   private siteUrl = this.urlParts.slice(0, 3).join('/');
@@ -236,6 +236,7 @@ export default class EditQuicklinks extends React.Component<IEditQuicklinksProps
         boxId: item.ID,
         linkType: item.linkType
       }));
+      extractedData2.sort((a, b) => a.boxTitle.localeCompare(b.boxTitle));
       let personalLinksIDs: Array<string> = [];
       if (personalLinks !== ';') {
         personalLinksIDs = personalLinks.split(';');
@@ -274,6 +275,7 @@ export default class EditQuicklinks extends React.Component<IEditQuicklinksProps
             });
           promises.push(promise);
           extractedData = extractedData.filter(item => item.boxId !== promise.boxId);
+          extractedData.sort((a, b) => a.boxTitle.localeCompare(b.boxTitle));
         }
       }
       const optionalDataResults: IBoxDataObject[] = await Promise.all(promises);
@@ -286,6 +288,7 @@ export default class EditQuicklinks extends React.Component<IEditQuicklinksProps
       optionalDataResults2.forEach(item => {
         extractedData = extractedData.filter(item2 => item2.boxId !== item.boxId);
       });
+      optionalDataResults2.sort((a, b) => a.boxTitle.localeCompare(b.boxTitle));
       const allLinks: Array<IBoxDataObject> = extractedData2.concat(optionalDataResults2);
       this.setState({ boxData: extractedData, boxData2: allLinks }, () => {
         //  console.log(this.state.boxData2);
