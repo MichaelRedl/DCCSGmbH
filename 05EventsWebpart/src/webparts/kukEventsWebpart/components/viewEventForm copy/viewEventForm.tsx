@@ -1,12 +1,24 @@
 import * as React from 'react';
 import styles from '../KukEventsWebpart.module.scss';
 import { IviewEventsProps } from './viewEventFormProps';
-import { DatePicker, DayOfWeek, IDatePickerStrings, TextField, Dropdown, IDropdownOption, PrimaryButton, Checkbox }
+import { DatePicker, DayOfWeek, IDatePickerStrings, TextField, Dropdown, IDropdownOption, Checkbox }
     from 'office-ui-fabric-react';
 import { PeoplePicker, PrincipalType } from '@pnp/spfx-controls-react/lib/PeoplePicker';
 import { sp } from '@pnp/sp';
-import { times } from '@microsoft/sp-lodash-subset';
-
+// import { times } from '@microsoft/sp-lodash-subset';
+/* tslint:disable: no-any*/
+/* tslint:disable: max-line-length*/
+/* tslint:disable: no-consecutive-blank-lines*/
+/* tslint:disable: no-function-expression*/
+/* tslint:disable: no-shadowed-variable*/
+/* tslint:disable: no-trailing-whitespace*/
+/* tslint:disable: member-ordering*/
+/* tslint:disable: prefer-const*/
+/* tslint:disable: whitespace*/ 
+/* tslint:disable: quotemark*/
+/* tslint:disable: no-null-keyword*/
+/* tslint:disable: variable-name*/
+/* tslint:disable: react-a11y-role-has-required-aria-props*/
 const DayPickerStrings: IDatePickerStrings = {
     months: [
         'Januar', 'Februar', 'März', 'April', 'Mai', 'Juni',
@@ -60,7 +72,7 @@ export interface IviewEventFormState {
 }
 
 export default class ViewEventForm extends React.Component<IviewEventsProps, IviewEventFormState> {
-    private siteUrl: string = this.props.context.pageContext.web.absoluteUrl;
+   // private siteUrl: string = this.props.context.pageContext.web.absoluteUrl;
 
     constructor(props: IviewEventsProps) {
         super(props);
@@ -93,7 +105,7 @@ export default class ViewEventForm extends React.Component<IviewEventsProps, Ivi
             recurrenceOptions: [
                 { key: 'daily', text: 'Täglich' },
                 { key: 'weekly', text: 'Wöchentlich' },
-                { key: 'monthly', text: 'Monatlich' },
+                { key: 'monthly', text: 'Monatlich' }
             ],
             seriesID: null,
             buttonsVisible: true
@@ -409,7 +421,7 @@ export default class ViewEventForm extends React.Component<IviewEventsProps, Ivi
         this.setState({ buttonsVisible: false });
         if (this.state.isSeriesEvent) {
             try {
-                const itemsToDelete = await sp.web.lists.getByTitle("Events").items
+                const itemsToDelete: any = await sp.web.lists.getByTitle("Events").items
                     .filter(`substringof('${this.state.seriesID}', SeriesEventData)`)
                     .get();
 
@@ -427,22 +439,20 @@ export default class ViewEventForm extends React.Component<IviewEventsProps, Ivi
                 await sp.web.lists.getByTitle("Events").items.getById(Number(this.props.formItemId)).delete();
                 this.props.componentDidMount();
                 this.props.handleButtonClick();
-            }
-            catch (error) {
+            } catch (error) {
                 console.error("Error deleting item: ", error);
             }
         }
-    };
+    }
 
 
     private editForm = () => {
-        const mode: boolean = !this.state.isEditMode;
+      //  const mode: boolean = !this.state.isEditMode;
         this.setState({ isEditMode: true, firstLoad: false });
     }
 
     private handleTitleChange = (newValue: string) => {
-        this.setState({ title: newValue || '' }, () => {
-        });
+        this.setState({ title: newValue || '' });
     }
 
   /*  private handleOrtChange = (item) => {
@@ -454,7 +464,7 @@ export default class ViewEventForm extends React.Component<IviewEventsProps, Ivi
 
     private handleBeschreibungChange = (event: string) => {
         this.setState({ beschreibung: event });
-    };
+    }
 
     private handleVeranstalterChange = (event: string) => {
         this.setState({ veranstalter: event || '' });
@@ -482,37 +492,35 @@ export default class ViewEventForm extends React.Component<IviewEventsProps, Ivi
         this.setState({ mm2: String(option) });
     }
 
-    private handleZielgruppeChange = (item) => {
+    private handleZielgruppeChange = (item: any) => {
         let zielArray: string[] = this.state.Zielgruppe;
 
         if (item.selected === true) {
             zielArray.push(String(item.key));
-        }
-        else {
-            let valueToRemove = String(item.key);
+        } else {
+            let valueToRemove: any = String(item.key);
             zielArray = zielArray.filter(item => item !== valueToRemove);
         }
         this.setState({ Zielgruppe: zielArray });
     }
 
-    private handleKategorieChange = (item) => {
+    private handleKategorieChange = (item: any) => {
         let katArray: string[] = this.state.Kategorien;
 
         if (item.selected === true) {
             katArray.push(String(item.key));
-        }
-        else {
-            let valueToRemove = String(item.key);
+        } else {
+            let valueToRemove: any = String(item.key);
             katArray = katArray.filter(item => item !== valueToRemove);
         }
         this.setState({ Kategorien: katArray });
     }
 
-    private handleInternerVortragendeChange(items) {
+    private handleInternerVortragendeChange(items: any): any {
         if (items && items.length > 0) {
             let mailArray: string[] = [];
-            for (let i = 0; i < items.length; i++) {
-                if (mailArray.indexOf(items[i].secondaryText) === -1 && items[i].secondaryText != "") {
+            for (let i: number = 0; i < items.length; i++) {
+                if (mailArray.indexOf(items[i].secondaryText) === -1 && items[i].secondaryText !== "") {
                     mailArray.push(items[i].secondaryText);
                 }
             }
@@ -522,17 +530,17 @@ export default class ViewEventForm extends React.Component<IviewEventsProps, Ivi
         }
     }
 
-    private handleExternerVortragendeChange = (items) => {
+    private handleExternerVortragendeChange = (items: any) => {
         if (items && items.length > 0) {
             let mailArray: string[] = [];
-            for (let i = 0; i < items.length; i++) {
-                if (mailArray.indexOf(items[i].secondaryText) === -1 && items[i].secondaryText != "") {
+            for (let i: number = 0; i < items.length; i++) {
+                if (mailArray.indexOf(items[i].secondaryText) === -1 && items[i].secondaryText !== "") {
                     mailArray.push(items[i].secondaryText);
                 }
             }
             this.setState({ externerVortragendeMail: mailArray });
         }
-    };
+    }
 
     private validateForm = () => {
         if (this.state.title === null || this.state.selectedDate === null || this.state.selectedDate2 === null
@@ -550,7 +558,7 @@ export default class ViewEventForm extends React.Component<IviewEventsProps, Ivi
                 this.setState({ dateErrorShowing: true });
                 return false;
             }
-            if (Number(this.state.hh1) == Number(this.state.hh2)) {
+            if (Number(this.state.hh1) === Number(this.state.hh2)) {
                 if (Number(this.state.mm1) > Number(this.state.mm2)) {
                     this.setState({ dateErrorShowing: true });
                     return false;
@@ -564,7 +572,7 @@ export default class ViewEventForm extends React.Component<IviewEventsProps, Ivi
         return true;
     }
 
-    private saveEvent = async () => {
+ /*   private saveEvent = async () => {
         try {
             // Combine date and time for EventDate
             const eventDate: Date = this.state.selectedDate;
@@ -599,7 +607,7 @@ export default class ViewEventForm extends React.Component<IviewEventsProps, Ivi
         } catch (error) {
             console.error("Error saving event:", error);
         }
-    }
+    }*/
 
     private updateEvent = async (itemID: number) => {
         try {
@@ -612,7 +620,7 @@ export default class ViewEventForm extends React.Component<IviewEventsProps, Ivi
             endDate.setHours(Number(this.state.hh2), Number(this.state.mm2), 0, 0);
 
             // Prepare other data in JSON format
-            const otherData = JSON.stringify({
+            const otherData: any = JSON.stringify({
                 Veranstalter: this.state.veranstalter,
                 InternerVortragender: this.state.internerVortragende,
                 InternerVortragendeMail: this.state.internerVortragendeMail,
@@ -645,20 +653,20 @@ export default class ViewEventForm extends React.Component<IviewEventsProps, Ivi
         try {
             await this.getOrtOptions();
             // Fetch the list item using its ID
-            const item = await sp.web.lists.getByTitle("Events").items.getById(Number(itemId)).get();
-            const title = item.Title;
-            const selectedDate = new Date(item.EventDate);
-            const selectedDate2 = new Date(item.EndDate);
-            let hh1 = String(selectedDate.getHours());
-            if (hh1.length < 2) { hh1 = 0 + hh1 }
-            let mm1 = String(selectedDate.getMinutes());
-            if (mm1.length < 2) { mm1 = 0 + mm1 }
-            let hh2 = String(selectedDate2.getHours());
-            if (hh2.length < 2) { hh2 = 0 + hh2 }
-            let mm2 = String(selectedDate2.getMinutes());
-            if (mm2.length < 2) { mm2 = 0 + mm2 }
-            const otherData = JSON.parse(item.EventData);
-            const seriesEventData = JSON.parse(item.SeriesEventData);
+            const item: any = await sp.web.lists.getByTitle("Events").items.getById(Number(itemId)).get();
+            const title: any = item.Title;
+            const selectedDate: any = new Date(item.EventDate);
+            const selectedDate2: any = new Date(item.EndDate);
+            let hh1: any = String(selectedDate.getHours());
+            if (hh1.length < 2) { hh1 = 0 + hh1; }
+            let mm1: any = String(selectedDate.getMinutes());
+            if (mm1.length < 2) { mm1 = 0 + mm1; }
+            let hh2: any = String(selectedDate2.getHours());
+            if (hh2.length < 2) { hh2 = 0 + hh2; }
+            let mm2: any = String(selectedDate2.getMinutes());
+            if (mm2.length < 2) { mm2 = 0 + mm2; }
+            const otherData: any = JSON.parse(item.EventData);
+            const seriesEventData: any = JSON.parse(item.SeriesEventData);
             this.setState({
                 title,
                 selectedDate,
@@ -666,7 +674,7 @@ export default class ViewEventForm extends React.Component<IviewEventsProps, Ivi
                 mm1,
                 selectedDate2,
                 hh2,
-                mm2,
+                mm2
             });
             this.setState({
                 veranstalter: otherData && 'Veranstalter' in otherData ? otherData.Veranstalter : null,
@@ -676,7 +684,7 @@ export default class ViewEventForm extends React.Component<IviewEventsProps, Ivi
                 Kategorien: otherData && 'Kategorien' in otherData ? otherData.Kategorien : null,
                 Ort: otherData && 'Ort' in otherData ? String(otherData.Ort) : null,
                 OrtName: otherData && 'OrtName' in otherData ? String(otherData.OrtName) : null,
-                beschreibung: item && 'Description' in item ? item.Description : null,
+                beschreibung: item && 'Description' in item ? item.Description : null
             });
             
            /* this.setState({ veranstalter: otherData.Veranstalter });
@@ -694,7 +702,7 @@ export default class ViewEventForm extends React.Component<IviewEventsProps, Ivi
             this.setState({
                 seriesEndDate: seriesEventData && 'seriesEndDate' in seriesEventData ? new Date(seriesEventData.seriesEndDate) : null,
                 isSeriesEvent: seriesEventData && 'isSeriesEvent' in seriesEventData ? seriesEventData.isSeriesEvent : null,
-                seriesID: seriesEventData && 'seriesID' in seriesEventData ? seriesEventData.seriesID : null,
+                seriesID: seriesEventData && 'seriesID' in seriesEventData ? seriesEventData.seriesID : null
             });
             // if(otherData.eve)
         } catch (error) {
@@ -704,8 +712,8 @@ export default class ViewEventForm extends React.Component<IviewEventsProps, Ivi
 
     private getOrtOptions = async () => {
         try {
-            const items = await sp.web.lists.getByTitle("Orte").items.select("Title").get();
-            const ortOptions = items.map((item, index) => ({ key: index + 1, text: item.Title }));
+            const items: any = await sp.web.lists.getByTitle("Orte").items.select("Title").get();
+            const ortOptions: any = items.map((item, index) => ({ key: index + 1, text: item.Title }));
             this.setState({ ortOptions });
         } catch (error) {
             console.error("Error fetching 'Orte' list items:", error);

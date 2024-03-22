@@ -1,12 +1,24 @@
 import * as React from 'react';
 import styles from '../KukEventsWebpart.module.scss';
 import { InewEventsProps } from './newEventFormProps';
-import { DatePicker, DayOfWeek, IDatePickerStrings, TextField, Dropdown, IDropdownOption, PrimaryButton, Checkbox }
+import { DatePicker, DayOfWeek, IDatePickerStrings, TextField, Dropdown, IDropdownOption, Checkbox }
     from 'office-ui-fabric-react';
 import { PeoplePicker, PrincipalType } from '@pnp/spfx-controls-react/lib/PeoplePicker';
 import { sp } from '@pnp/sp';
-import { times } from '@microsoft/sp-lodash-subset';
-
+//  import { times } from '@microsoft/sp-lodash-subset';
+/* tslint:disable: no-any*/
+/* tslint:disable: max-line-length*/
+/* tslint:disable: no-consecutive-blank-lines*/
+/* tslint:disable: no-function-expression*/
+/* tslint:disable: no-shadowed-variable*/
+/* tslint:disable: no-trailing-whitespace*/
+/* tslint:disable: member-ordering*/
+/* tslint:disable: prefer-const*/ 
+/* tslint:disable: whitespace*/
+/* tslint:disable: quotemark*/
+/* tslint:disable: no-null-keyword*/
+/* tslint:disable: variable-name*/
+/* tslint:disable: react-a11y-role-has-required-aria-props*/
 const DayPickerStrings: IDatePickerStrings = {
     months: [
         'Januar', 'Februar', 'März', 'April', 'Mai', 'Juni',
@@ -52,7 +64,7 @@ export interface InewEventFormState {
     ortOptions: IDropdownOption[];
     buttonsVisible: boolean;
 
-    //Series Event States
+    // Series Event States
     isSeriesEvent: boolean;
     seriesEndDate: Date;
     recurrencePattern: string;
@@ -61,7 +73,7 @@ export interface InewEventFormState {
 }
 
 export default class NewEventForm extends React.Component<InewEventsProps, InewEventFormState> {
-    private siteUrl: string = this.props.context.pageContext.web.absoluteUrl;
+  //  private siteUrl: string = this.props.context.pageContext.web.absoluteUrl;
 
     constructor(props: InewEventsProps) {
         super(props);
@@ -88,14 +100,14 @@ export default class NewEventForm extends React.Component<InewEventsProps, InewE
             dateErrorShowing2: false,
             ortOptions: [],
 
-            //Series Event States
+            // Series Event States
             isSeriesEvent: false,
             seriesEndDate: undefined,
             recurrencePattern: 'daily',
             recurrenceOptions: [
                 { key: 'daily', text: 'Täglich' },
                 { key: 'weekly', text: 'Wöchentlich' },
-                { key: 'monthly', text: 'Monatlich' },
+                { key: 'monthly', text: 'Monatlich' }
             ],
             selectedRecurrence: 'daily',
             buttonsVisible: true
@@ -266,7 +278,7 @@ export default class NewEventForm extends React.Component<InewEventsProps, InewE
                             context={this.props.context}
                             titleText='Interne/r Vortragende/r'
                             personSelectionLimit={10}
-                            groupName={''} // Use this prop to filter by SharePoint group
+                            groupName={''} //  Use this prop to filter by SharePoint group
                             showtooltip={true}
                             showHiddenInUI={false}
                             principleTypes={[PrincipalType.User]}
@@ -276,7 +288,7 @@ export default class NewEventForm extends React.Component<InewEventsProps, InewE
                             context={this.props.context}
                             titleText='Extern/e Vortragend/e'
                             personSelectionLimit={10}
-                            groupName={''} // Use this prop to filter by SharePoint group
+                            groupName={''} //  Use this prop to filter by SharePoint group
                             showtooltip={true}
                             showHiddenInUI={false}
                             principleTypes={[PrincipalType.User]}
@@ -377,20 +389,20 @@ export default class NewEventForm extends React.Component<InewEventsProps, InewE
 
     private handleSeriesEventChange = (ev: React.FormEvent<HTMLElement>, isChecked: boolean) => {
         this.setState({ isSeriesEvent: isChecked });
-    };
+    }
 
     private handleRecurrencePatternChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         this.setState({ selectedRecurrence: event.target.value });
-    };
+    }
 
-    // ... other handlers remain the same
+    //  ... other handlers remain the same
 
 
     private handleSeriesEndDateChange = (date: Date | null | undefined) => {
         if (date) {
             this.setState({ seriesEndDate: date });
         }
-    };
+    }
 
 
     private handleTitleChange = (newValue: string) => {
@@ -435,38 +447,36 @@ export default class NewEventForm extends React.Component<InewEventsProps, InewE
         this.setState({ mm2: String(option) });
     }
 
-    private handleZielgruppeChange = (item) => {
+    private handleZielgruppeChange = (item: any) => {
         let zielArray: string[] = this.state.Zielgruppe;
 
         if (item.selected === true) {
             zielArray.push(String(item.key));
-        }
-        else {
-            let valueToRemove = String(item.key);
+        } else {
+            let valueToRemove: any = String(item.key);
             zielArray = zielArray.filter(item => item !== valueToRemove);
         }
         this.setState({ Zielgruppe: zielArray });
     }
 
-    private handleKategorieChange = (item) => {
+    private handleKategorieChange = (item: any) => {
         let katArray: string[] = this.state.Kategorien;
 
         if (item.selected === true) {
             katArray.push(String(item.key));
-        }
-        else {
-            let valueToRemove = String(item.key);
+        } else {
+            let valueToRemove: string = String(item.key);
             katArray = katArray.filter(item => item !== valueToRemove);
         }
         this.setState({ Kategorien: katArray });
     }
 
-    private handleInternerVortragendeChange = (items) => {
+    private handleInternerVortragendeChange = (items:any) => {
 
         if (items && items.length > 0) {
             let mailArray: string[] = [];
-            for (let i = 0; i < items.length; i++) {
-                if (mailArray.indexOf(items[i].secondaryText) === -1 && items[i].secondaryText != "") {
+            for (let i: number = 0; i < items.length; i++) {
+                if (mailArray.indexOf(items[i].secondaryText) === -1 && items[i].secondaryText !== "") {
                     mailArray.push(items[i].secondaryText);
                 }
             }
@@ -474,17 +484,17 @@ export default class NewEventForm extends React.Component<InewEventsProps, InewE
         }
     }
 
-    private handleExternerVortragendeChange = (items) => {
+    private handleExternerVortragendeChange = (items: any) => {
         if (items && items.length > 0) {
             let mailArray: string[] = [];
-            for (let i = 0; i < items.length; i++) {
-                if (mailArray.indexOf(items[i].secondaryText) === -1 && items[i].secondaryText != "") {
+            for (let i: number = 0; i < items.length; i++) {
+                if (mailArray.indexOf(items[i].secondaryText) === -1 && items[i].secondaryText !== "") {
                     mailArray.push(items[i].secondaryText);
                 }
             }
             this.setState({ externerVortragendeMail: mailArray });
         }
-    };
+    }
 
     private validateForm = () => {
         if (this.state.isSeriesEvent === true) {
@@ -508,7 +518,7 @@ export default class NewEventForm extends React.Component<InewEventsProps, InewE
                     this.setState({ dateErrorShowing: true });
                     return false;
                 }
-                if (Number(this.state.hh1) == Number(this.state.hh2)) {
+                if (Number(this.state.hh1) === Number(this.state.hh2)) {
                     if (Number(this.state.mm1) > Number(this.state.mm2)) {
                         this.setState({ dateErrorShowing: true });
                         return false;
@@ -536,7 +546,7 @@ export default class NewEventForm extends React.Component<InewEventsProps, InewE
                     this.setState({ dateErrorShowing: true });
                     return false;
                 }
-                if (Number(this.state.hh1) == Number(this.state.hh2)) {
+                if (Number(this.state.hh1) === Number(this.state.hh2)) {
                     if (Number(this.state.mm1) > Number(this.state.mm2)) {
                         this.setState({ dateErrorShowing: true });
                         return false;
@@ -553,15 +563,15 @@ export default class NewEventForm extends React.Component<InewEventsProps, InewE
         if (this.state.isSeriesEvent === true) {
             this.setState({ buttonsVisible: false });
             try {
-                // Find out how events the series has
+                //  Find out how events the series has
                 const { selectedDate, seriesEndDate, selectedRecurrence } = this.state;
 
                 if (!selectedDate || !seriesEndDate || !selectedRecurrence) {
                     return 0;
                 }
 
-                let currentDate = new Date(selectedDate.getTime());
-                let count = 0;
+                let currentDate: any = new Date(selectedDate.getTime());
+                let count: any = 0;
                 let eventDatesArray: Date[] = [];
                 eventDatesArray.push(new Date(currentDate.getTime()));
 
@@ -576,16 +586,16 @@ export default class NewEventForm extends React.Component<InewEventsProps, InewE
                     }
                     eventDatesArray.push(new Date(currentDate.getTime()));
                 }
-                // Combine date and time for EventDate
+                //  Combine date and time for EventDate
                 let eventDate: Date = this.state.selectedDate;
                 eventDate.setHours(Number(this.state.hh1), Number(this.state.mm1), 0, 0);
 
-                // Combine date and time for EndDate
+                //  Combine date and time for EndDate
                 let endDate: Date = this.state.selectedDate2;
                 endDate.setHours(Number(this.state.hh2), Number(this.state.mm2), 0, 0);
 
-                // Prepare other data in JSON format
-                const otherData = JSON.stringify({
+                //  Prepare other data in JSON format
+                const otherData: any = JSON.stringify({
                     Veranstalter: this.state.veranstalter,
                     InternerVortragender: this.state.internerVortragende,
                     InternerVortragendeMail: this.state.internerVortragendeMail,
@@ -597,33 +607,33 @@ export default class NewEventForm extends React.Component<InewEventsProps, InewE
                     OrtName: this.state.OrtName
                 });
 
-                const uniqueId = `id_${Math.random().toString(36).substr(2, 9)}_${Date.now()}`;
-                const seriesEventData = JSON.stringify({
+                const uniqueId: any = `id_${Math.random().toString(36).substr(2, 9)}_${Date.now()}`;
+                const seriesEventData: any = JSON.stringify({
                     isSeriesEvent: true,
                     seriesID: uniqueId,
                     selectedRecurrence: this.state.selectedRecurrence,
                     seriesEndDate: this.state.seriesEndDate
-                })
+                });
 
 
-                // Save all series events to sharepoint list if there are no more than 50 events
+                //  Save all series events to sharepoint list if there are no more than 50 events
                 if (eventDatesArray.length > 50) {
                     alert("Serien-Events dürfen nicht mehr als 50 Events umfassen.");
                     return 0;
                 }
-                let temphh1 = this.state.hh1;
-                let temphh2 = this.state.hh2;
-                let tempmm1 = this.state.mm1;
-                let tempmm2 = this.state.mm2;
+                let temphh1: any = this.state.hh1;
+                let temphh2: any = this.state.hh2;
+                let tempmm1: any = this.state.mm1;
+                let tempmm2: any = this.state.mm2;
                 
-                for (let i = 0; i < eventDatesArray.length; i++) {
-                    // Combine date and time for EventDate
+                for (let i: number = 0; i < eventDatesArray.length; i++) {
+                    //  Combine date and time for EventDate
                     eventDate = new Date(eventDatesArray[i].getTime());
-                    //            eventDate.setHours(Number(this.state.hh1), Number(this.state.mm1), 0, 0);
+                    //             eventDate.setHours(Number(this.state.hh1), Number(this.state.mm1), 0, 0);
                     eventDate.setHours(Number(temphh1), Number(tempmm1), 0, 0);
-                    // Combine date and time for EndDate
+                    //  Combine date and time for EndDate
                     endDate = new Date(eventDatesArray[i].getTime());
-                    //           endDate.setHours(Number(this.state.hh2), Number(this.state.mm2), 0, 0);
+                    //            endDate.setHours(Number(this.state.hh2), Number(this.state.mm2), 0, 0);
                     endDate.setHours(Number(temphh2), Number(tempmm2), 0, 0);
                     await sp.web.lists.getByTitle("Events").items.add({
                         Title: this.state.title,
@@ -642,16 +652,16 @@ export default class NewEventForm extends React.Component<InewEventsProps, InewE
         } else {
 
             try {
-                // Combine date and time for EventDate
+                //  Combine date and time for EventDate
                 const eventDate: Date = this.state.selectedDate;
                 eventDate.setHours(Number(this.state.hh1), Number(this.state.mm1), 0, 0);
 
-                // Combine date and time for EndDate
+                //  Combine date and time for EndDate
                 const endDate: Date = this.state.selectedDate2;
                 endDate.setHours(Number(this.state.hh2), Number(this.state.mm2), 0, 0);
 
-                // Prepare other data in JSON format
-                const otherData = JSON.stringify({
+                //  Prepare other data in JSON format
+                const otherData: any = JSON.stringify({
                     Veranstalter: this.state.veranstalter,
                     InternerVortragender: this.state.internerVortragende,
                     InternerVortragendeMail: this.state.internerVortragendeMail,
@@ -663,7 +673,7 @@ export default class NewEventForm extends React.Component<InewEventsProps, InewE
                     OrtName: this.state.OrtName
                 });
 
-                // Save to SharePoint list
+                //  Save to SharePoint list
                 await sp.web.lists.getByTitle("Events").items.add({
                     Title: this.state.title,
                     EventDate: eventDate,
@@ -681,8 +691,8 @@ export default class NewEventForm extends React.Component<InewEventsProps, InewE
 
     private getOrtOptions = async () => {
         try {
-            const items = await sp.web.lists.getByTitle("Orte").items.select("Title").get();
-            const ortOptions = items.map((item, index) => ({ key: index + 1, text: item.Title }));
+            const items: any = await sp.web.lists.getByTitle("Orte").items.select("Title").get();
+            const ortOptions: any = items.map((item, index) => ({ key: index + 1, text: item.Title }));
             this.setState({ ortOptions });
         } catch (error) {
             console.error("Error fetching 'Orte' list items:", error);

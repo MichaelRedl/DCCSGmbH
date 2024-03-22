@@ -11,7 +11,13 @@ import {
 import * as strings from 'KukEventsWebpartWebPartStrings';
 import KukEventsWebpart from './components/KukEventsWebpart';
 import { IKukEventsWebpartProps } from './components/IKukEventsWebpartProps';
-
+/* tslint:disable: no-any*/
+/* tslint:disable: max-line-length*/
+/* tslint:disable: no-consecutive-blank-lines*/
+/* tslint:disable: no-function-expression*/
+/* tslint:disable: no-shadowed-variable*/
+/* tslint:disable: no-trailing-whitespace*/
+/* tslint:disable: member-ordering*/
 export interface IKukEventsWebpartWebPartProps {
   heading: string;
   headingsize: number;

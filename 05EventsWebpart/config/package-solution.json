@@ -3,7 +3,7 @@
   "solution": {
     "name": "kuk-events-webpart-client-side-solution",
     "id": "2e18a152-e6ea-4953-991e-6fba123cb470",
-    "version": "1.0.0.40",
+    "version": "1.0.0.41",
     "includeClientSideAssets": true
   },
   "paths": {

@@ -6,7 +6,16 @@ import AllEvents from './allEvents/allEvents';
 import NewEventForm from '../../../../lib/webparts/kukEventsWebpart/components/newEventForm/newEventForm';
 import ViewEventForm from './viewEventForm copy/viewEventForm';
 import { sp } from '@pnp/sp';
-
+/* tslint:disable: no-any*/
+/* tslint:disable: max-line-length*/
+/* tslint:disable: no-consecutive-blank-lines*/
+/* tslint:disable: no-function-expression*/
+/* tslint:disable: no-shadowed-variable*/
+/* tslint:disable: no-trailing-whitespace*/
+/* tslint:disable: member-ordering*/ 
+/* tslint:disable: prefer-const*/ 
+/* tslint:disable: whitespace*/ 
+/* tslint:disable: quotemark*/
 export interface IEventsObject {
   title: string;
   startTime: string;
@@ -68,7 +77,7 @@ export default class KukEventsWebpart extends React.Component<IKukEventsWebpartP
       if (!response.ok) {
         throw new Error('Error fetching list data');
       }
-      const data = await response.json();
+      const data: any = await response.json();
 
       if (!data.d || !data.d.results || !Array.isArray(data.d.results)) {
         throw new Error('Invalid response data structure');

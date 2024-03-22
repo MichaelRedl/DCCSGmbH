@@ -7,6 +7,18 @@ import ViewEventForm from '../viewEventForm copy/viewEventForm';
 import { sp } from '@pnp/sp';
 import { PeoplePicker, PrincipalType } from '@pnp/spfx-controls-react/lib/PeoplePicker';
 
+/* tslint:disable: no-any*/
+/* tslint:disable: max-line-length*/
+/* tslint:disable: no-consecutive-blank-lines*/
+/* tslint:disable: no-function-expression*/
+/* tslint:disable: no-shadowed-variable*/
+/* tslint:disable: no-trailing-whitespace*/
+/* tslint:disable: member-ordering*/
+/* tslint:disable: prefer-const*/ 
+/* tslint:disable: whitespace*/ 
+/* tslint:disable: quotemark*/
+/* tslint:disable: no-null-keyword*/
+
 export interface IEventsObject {
     title: string;
     startTime: string;
@@ -20,7 +32,7 @@ export interface IEventsObject {
     category: string;
     id: string;
     today: string;
-    eventData: { OrtName, Veranstalter, Zielgruppe, Kategorien, Ort, InternerVortragendeMail, ExternerVortragendeMail };
+    eventData: { OrtName:any, Veranstalter:any, Zielgruppe:any, Kategorien:any, Ort:any, InternerVortragendeMail:any, ExternerVortragendeMail:any};
 }
 
 export interface IAllEventsState {
@@ -61,7 +73,7 @@ export default class AllEvents extends React.Component<IAllEventsProps, IAllEven
             Kategorien: [],
             Ort: undefined,
             internalPresentersEmails: [],
-            externalPresentersEmails: [],
+            externalPresentersEmails: []
         };
     }
 
@@ -69,7 +81,7 @@ export default class AllEvents extends React.Component<IAllEventsProps, IAllEven
         katArray: any, location: any, internalPresentersEmails: any, externalPresentersEmails: any) => {
         try {
             const today: Date = new Date();
-            today.setHours(0, 0, 0, 0); // Set to the start of today
+            today.setHours(0, 0, 0, 0); //  Set to the start of today
             const isoToday: string = today.toISOString();
             let url: string = '';
             if (from !== undefined && until === undefined) {
@@ -89,7 +101,7 @@ export default class AllEvents extends React.Component<IAllEventsProps, IAllEven
                 EventDate ge datetime'${isoToday}'&$orderby=EventDate asc`;
             }
 
-            const response = await fetch(url, {
+            const response:any = await fetch(url, {
                 headers: {
                     'Accept': 'application/json;odata=verbose',
                     'Content-Type': 'application/json;odata=verbose'
@@ -98,7 +110,7 @@ export default class AllEvents extends React.Component<IAllEventsProps, IAllEven
             if (!response.ok) {
                 throw new Error('Error fetching list data');
             }
-            const data = await response.json();
+            const data: any = await response.json();
 
             if (!data.d || !data.d.results || !Array.isArray(data.d.results)) {
                 throw new Error('Invalid response data structure');
@@ -120,36 +132,36 @@ export default class AllEvents extends React.Component<IAllEventsProps, IAllEven
 
             }));
 
-            // Filter based on 'veranstalter', 'zielgruppe', 'kategorie' and 'ort'
+            //  Filter based on 'veranstalter', 'zielgruppe', 'kategorie' and 'ort'
             if (veranstalter) {
                 eventsItems = eventsItems.filter(item => item.eventData.Veranstalter &&
                     item.eventData.Veranstalter.includes(veranstalter));
             }
             if (zielgruppe && !zielgruppe.includes('7')) {
-                for (let i = 0; i < zielgruppe.length; i++) {
+                for (let i: number = 0; i < zielgruppe.length; i++) {
                     eventsItems = eventsItems.filter(item => item.eventData.Zielgruppe &&
                         item.eventData.Zielgruppe.includes(zielgruppe[i]));
                 }
             }
             if (katArray && !katArray.includes('4')) {
-                for (let i = 0; i < katArray.length; i++) {
+                for (let i:number = 0; i < katArray.length; i++) {
                     eventsItems = eventsItems.filter(item => item.eventData.Kategorien &&
                         item.eventData.Kategorien.includes(katArray[i]));
                 }
             }
-            if (location && Number(location) !== this.state.ortOptions.length) {
-                eventsItems = eventsItems.filter(item => item.eventData.Ort &&
-                    item.eventData.Ort.includes(location));
+            if (location) {
+                eventsItems = eventsItems.filter(item => item.eventData.OrtName &&
+                    item.eventData.OrtName.includes(location));
             }
 
             if (this.state.internalPresentersEmails.length > 0) {
                 eventsItems = eventsItems.filter(item => {
-                    let matchFound = false;
+                    let matchFound: boolean = false;
                     for (let email of this.state.internalPresentersEmails) {
                         if (item.eventData.InternerVortragendeMail &&
                             item.eventData.InternerVortragendeMail.includes(email)) {
                             matchFound = true;
-                            break; // Stop searching if a match is found
+                            break; //  Stop searching if a match is found
                         }
                     }
                     return matchFound;
@@ -158,12 +170,12 @@ export default class AllEvents extends React.Component<IAllEventsProps, IAllEven
 
             if (this.state.externalPresentersEmails.length > 0) {
                 eventsItems = eventsItems.filter(item => {
-                    let matchFound = false;
+                    let matchFound: boolean = false;
                     for (let email of this.state.externalPresentersEmails) {
                         if (item.eventData.ExternerVortragendeMail &&
                             item.eventData.ExternerVortragendeMail.includes(email)) {
                             matchFound = true;
-                            break; // Stop searching if a match is found
+                            break; //  Stop searching if a match is found
                         }
                     }
                     return matchFound;
@@ -194,7 +206,7 @@ export default class AllEvents extends React.Component<IAllEventsProps, IAllEven
                 const day2String: string = day2.toString();
                 const month2: number = date2.getUTCMonth() + 1;
                 let month2String: string = month2.toString();
-                const untilString: string = date2.toISOString().substring(11, 16);
+                const untilString: string = date2.toISOString().substring(11, 16); 
 
                 if ((dayString === day2String && monthString === month2String) ||
                     (originalTime === '00:00' && originalTime2 === '23:59')) {
@@ -293,7 +305,7 @@ export default class AllEvents extends React.Component<IAllEventsProps, IAllEven
         this.getEvents(this.state.selectedDateString, this.state.selectedDate2String,
             this.state.veranstalter, this.state.zielgruppe, this.state.Kategorien,
             this.state.Ort, this.state.internalPresentersEmails, this.state.externalPresentersEmails);
-        //this.getEvents(undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined);
+        // this.getEvents(undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined);
         this.getOrtOptions();
     }
 
@@ -337,7 +349,7 @@ export default class AllEvents extends React.Component<IAllEventsProps, IAllEven
         const icsContent: string = [
             'BEGIN:VCALENDAR',
             'VERSION:2.0',
-            'PRODID:-//Your Company//Your App//EN',
+            'PRODID:-// Your Company// Your App// EN',
             'BEGIN:VEVENT',
             `SUMMARY:${title}`,
             `LOCATION:${location}`,
@@ -364,11 +376,87 @@ export default class AllEvents extends React.Component<IAllEventsProps, IAllEven
         return date.toISOString().replace(/[-:]/g, '').replace('.000', '');
     }
 
+    private getOrtOptions = async () => {
+        try {
+            const items: any = await sp.web.lists.getByTitle('Orte').items.select('Title').get();
+            let ortOptions: any = items.map((item, index) => ({ key: index + 1, text: item.Title }));
+            let allKey: any = ortOptions.length + 1;
+            ortOptions.unshift({ key: allKey, text: 'Alle' });
+            this.setState({ ortOptions });
+
+        } catch (error) {
+            console.error('Error fetching Orte list items:', error);
+        }
+    }
+
+    private handleZielgruppeChange = (item:any) => {
+        let zielArray: string[] = this.state.zielgruppe;
+
+        if (item.selected === true) {
+            let tempItemKey:any = String(item.key);
+            zielArray.push(tempItemKey);
+        } else {
+            let valueToRemove: any = String(item.key);
+            zielArray = zielArray.filter(item => item !== valueToRemove);
+        }
+        this.setState({ zielgruppe: zielArray });
+        this.getEvents(this.state.selectedDateString, this.state.selectedDate2String,
+            this.state.veranstalter, zielArray, this.state.Kategorien, this.state.Ort,
+            this.state.internalPresentersEmails, this.state.externalPresentersEmails);
+    }
+
+    private handleVeranstalterChange = (event: string) => {
+        this.setState({ veranstalter: event || '' });
+        this.getEvents(this.state.selectedDateString, this.state.selectedDate2String,
+            event, this.state.zielgruppe, this.state.Kategorien, this.state.Ort,
+            this.state.internalPresentersEmails, this.state.externalPresentersEmails);
+    }
+
+    private handleKategorieChange = (item:any) => {
+        let katArray: string[] = this.state.Kategorien;
+
+        if (item.selected === true) {
+            katArray.push(String(item.key));
+        } else {
+            let valueToRemove: any = String(item.key);
+            katArray = katArray.filter(item => item !== valueToRemove);
+        }
+        this.setState({ Kategorien: katArray });
+        this.getEvents(this.state.selectedDateString, this.state.selectedDate2String,
+            this.state.veranstalter, this.state.zielgruppe, katArray, this.state.Ort,
+            this.state.internalPresentersEmails, this.state.externalPresentersEmails);
+    }
+
+    private handleOrtrChange = (event: string) => {
+        this.setState({ Ort: event || '' });
+        this.getEvents(this.state.selectedDateString, this.state.selectedDate2String,
+            this.state.veranstalter, this.state.zielgruppe, this.state.Kategorien, event,
+            this.state.internalPresentersEmails, this.state.externalPresentersEmails);
+    }
+
+    private handleInternalPresenterChange = (items: any[]) => {
+        const internalPresentersEmails: any = items.map(item => item.secondaryText);
+        this.setState({ internalPresentersEmails }, () => {
+            this.getEvents(this.state.selectedDateString, this.state.selectedDate2String,
+                this.state.veranstalter, this.state.zielgruppe, this.state.Kategorien,
+                this.state.Ort, internalPresentersEmails, this.state.externalPresentersEmails);
+        });
+    }
+
+    private handleExternalPresenterChange = (items: any[]) => {
+        const externalPresentersEmails: any = items.map(item => item.secondaryText);
+        this.setState({ externalPresentersEmails }, () => {
+            this.getEvents(this.state.selectedDateString, this.state.selectedDate2String,
+                this.state.veranstalter, this.state.zielgruppe, this.state.Kategorien,
+                this.state.Ort, this.state.internalPresentersEmails, externalPresentersEmails);
+        });
+    }
+
     public render(): React.ReactElement<IAllEventsProps> {
         const clockIcon: string = require('../icons/clock.png');
         const locationIcon: string = require('../icons/location.png');
         const calendarIcon: string = require('../icons/calendarIcon.png');
-        //  const chevronDown: string = require('../icons/chevronDown.png');
+        //   const chevronDown: string = require('../icons/chevronDown.png');
         return (
             <div className={styles.allEventsContainer}>
                 <div className={styles.allEventsContainer2}>
@@ -415,7 +503,7 @@ export default class AllEvents extends React.Component<IAllEventsProps, IAllEven
                                 label='Veranstalter'
                                 onChanged={this.handleVeranstalterChange}
                                 /*value={this.state.veranstalter} onChanged={this.handleVeranstalterChange}
-                            disabled={!this.state.isEditMode} *//>
+                            disabled={!this.state.isEditMode} *// >
 
                             </div>
                         </div>
@@ -436,16 +524,14 @@ export default class AllEvents extends React.Component<IAllEventsProps, IAllEven
                              disabled={!this.state.isEditMode}*/
                             />
                             </div>
-                            <div className={styles.certainWidth2}>
-                                <Dropdown label='Ort'
-                                    options={this.state.ortOptions}
-                                    onChanged={this.handleOrtChange}
-                                /*  onChanged={this.handleOrtChange}
-                                  disabled={!this.state.isEditMode}
-                                  options={this.state.ortOptions}
-                                  {...(this.state.firstLoad ? { selectedKey: Number(this.state.Ort) } : {})}*/
-                                />
+                            <div className={styles.certainWidth2}><TextField
+                                label='Ort'
+                                onChanged={this.handleOrtrChange}
+                                /*value={this.state.veranstalter} onChanged={this.handleVeranstalterChange}
+                            disabled={!this.state.isEditMode} *// >
+
                             </div>
+                          
                         </div>
                         <div className={styles.dateCointainer}>
                             <div className={styles.certainWidth2}>
@@ -453,7 +539,7 @@ export default class AllEvents extends React.Component<IAllEventsProps, IAllEven
                                     context={this.props.context}
                                     titleText='Interne/r Vortragende/r'
                                     personSelectionLimit={10}
-                                    groupName={''} // Use this prop to filter by SharePoint group
+                                    groupName={''} //  Use this prop to filter by SharePoint group
                                     showtooltip={true}
                                     showHiddenInUI={false}
                                     principleTypes={[PrincipalType.User]}
@@ -465,7 +551,7 @@ export default class AllEvents extends React.Component<IAllEventsProps, IAllEven
                                     context={this.props.context}
                                     titleText='Extern/e Vortragend/e'
                                     personSelectionLimit={10}
-                                    groupName={''} // Use this prop to filter by SharePoint group
+                                    groupName={''} //  Use this prop to filter by SharePoint group
                                     showtooltip={true}
                                     showHiddenInUI={false}
                                     principleTypes={[PrincipalType.User]}
@@ -540,79 +626,4 @@ export default class AllEvents extends React.Component<IAllEventsProps, IAllEven
             </div >
         );
     }
-    private getOrtOptions = async () => {
-        try {
-            const items = await sp.web.lists.getByTitle('Orte').items.select('Title').get();
-            let ortOptions = items.map((item, index) => ({ key: index + 1, text: item.Title }));
-            let allKey = ortOptions.length + 1;
-            ortOptions.unshift({ key: allKey, text: 'Alle' });
-            this.setState({ ortOptions });
-
-        } catch (error) {
-            console.error('Error fetching Orte list items:', error);
-        }
-    }
-
-    private handleZielgruppeChange = (item) => {
-        let zielArray: string[] = this.state.zielgruppe;
-
-        if (item.selected === true) {
-            let tempItemKey = String(item.key);
-            zielArray.push(tempItemKey);
-        } else {
-            let valueToRemove = String(item.key);
-            zielArray = zielArray.filter(item => item !== valueToRemove);
-        }
-        this.setState({ zielgruppe: zielArray });
-        this.getEvents(this.state.selectedDateString, this.state.selectedDate2String,
-            this.state.veranstalter, zielArray, this.state.Kategorien, this.state.Ort,
-            this.state.internalPresentersEmails, this.state.externalPresentersEmails);
-    }
-
-    private handleVeranstalterChange = (event: string) => {
-        this.setState({ veranstalter: event || '' });
-        this.getEvents(this.state.selectedDateString, this.state.selectedDate2String,
-            event, this.state.zielgruppe, this.state.Kategorien, this.state.Ort,
-            this.state.internalPresentersEmails, this.state.externalPresentersEmails);
-    }
-
-    private handleKategorieChange = (item) => {
-        let katArray: string[] = this.state.Kategorien;
-
-        if (item.selected === true) {
-            katArray.push(String(item.key));
-        } else {
-            let valueToRemove = String(item.key);
-            katArray = katArray.filter(item => item !== valueToRemove);
-        }
-        this.setState({ Kategorien: katArray });
-        this.getEvents(this.state.selectedDateString, this.state.selectedDate2String,
-            this.state.veranstalter, this.state.zielgruppe, katArray, this.state.Ort,
-            this.state.internalPresentersEmails, this.state.externalPresentersEmails);
-    }
-
-    private handleOrtChange = (item) => {
-        this.setState({ Ort: String(item.key) });
-        this.getEvents(this.state.selectedDateString, this.state.selectedDate2String,
-            this.state.veranstalter, this.state.zielgruppe, this.state.Kategorien, String(item.key),
-            this.state.internalPresentersEmails, this.state.externalPresentersEmails);
-    }
-
-    private handleInternalPresenterChange = (items: any[]) => {
-        const internalPresentersEmails = items.map(item => item.secondaryText);
-        this.setState({ internalPresentersEmails }, () => {
-            this.getEvents(this.state.selectedDateString, this.state.selectedDate2String,
-                this.state.veranstalter, this.state.zielgruppe, this.state.Kategorien,
-                this.state.Ort, internalPresentersEmails, this.state.externalPresentersEmails);
-        });
-    };
-
-    private handleExternalPresenterChange = (items: any[]) => {
-        const externalPresentersEmails = items.map(item => item.secondaryText);
-        this.setState({ externalPresentersEmails }, () => {
-            this.getEvents(this.state.selectedDateString, this.state.selectedDate2String,
-                this.state.veranstalter, this.state.zielgruppe, this.state.Kategorien,
-                this.state.Ort, this.state.internalPresentersEmails, externalPresentersEmails);
-        });
-    };
 }
